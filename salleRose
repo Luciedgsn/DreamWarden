@@ -1,0 +1,35 @@
+// Fonction pour créer une salle rose
+   /* const createPinkRoom = () => {
+        // Nouveau sol rose
+        ground = BABYLON.MeshBuilder.CreateGround("groundPink", { width: 60, height: 60 }, scene); 
+        const pinkGroundMaterial = new BABYLON.StandardMaterial("pinkGroundMaterial", scene);
+        pinkGroundMaterial.diffuseColor = new BABYLON.Color3(1, 0.75, 1);  // Rose
+        ground.material = pinkGroundMaterial;
+        ground.checkCollisions = true;
+
+        // Murs roses
+        const pinkWallMaterial = new BABYLON.StandardMaterial("pinkWallMaterial", scene);
+        pinkWallMaterial.diffuseColor = new BABYLON.Color3(1, 0.75, 1);  // Rose
+
+        const pinkWallFront = BABYLON.MeshBuilder.CreateBox("pinkWallFront", { width: taillePiece, height: wallHeight, depth: wallThickness }, scene);
+        pinkWallFront.position = new BABYLON.Vector3(0, wallHeight / 2, taillePiece / 2); 
+        pinkWallFront.material = pinkWallMaterial;
+        pinkWallFront.checkCollisions = true;
+
+        const pinkWallBack = BABYLON.MeshBuilder.CreateBox("pinkWallBack", { width: taillePiece, height: wallHeight, depth: wallThickness }, scene);  
+        pinkWallBack.position = new BABYLON.Vector3(0, wallHeight / 2, -taillePiece / 2); 
+        pinkWallBack.material = pinkWallMaterial;
+        pinkWallBack.checkCollisions = true;
+
+        const pinkWallLeft = BABYLON.MeshBuilder.CreateBox("pinkWallLeft", { width: wallThickness, height: wallHeight, depth: taillePiece }, scene);
+        pinkWallLeft.position = new BABYLON.Vector3(-taillePiece / 2, wallHeight / 2, 0); 
+        pinkWallLeft.material = pinkWallMaterial;
+        pinkWallLeft.checkCollisions = true;
+
+        const pinkWallRight = BABYLON.MeshBuilder.CreateBox("pinkWallRight", { width: wallThickness, height: wallHeight, depth: taillePiece }, scene);
+        pinkWallRight.position = new BABYLON.Vector3(taillePiece / 2, wallHeight / 2, 0); 
+        pinkWallRight.material = pinkWallMaterial;
+        pinkWallRight.checkCollisions = true;
+
+        console.log("Salle rose créée !");
+    };*/
