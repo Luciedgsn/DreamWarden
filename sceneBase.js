@@ -1,4 +1,3 @@
-// Assure-toi d'ajouter l'export ici
 export class SceneBase {
     constructor(engine, canvas) {
         this.engine = engine;
@@ -7,11 +6,12 @@ export class SceneBase {
         this.camera = null;
         this.light = null;
         this.ground = null;
+        this.personnage = null;  // Personnage ajouté ici
     }
 
     // Initialisation de la scène avec les éléments communs
     initScene() {
-        // Création de la caméra
+        // Création de la caméra fixe
         this.camera = new BABYLON.FreeCamera("FixedCamera", new BABYLON.Vector3(0, 13, -16), this.scene);
         this.camera.setTarget(new BABYLON.Vector3(0, 2.5, 0));
         this.camera.attachControl(this.canvas, false); // Désactivation du contrôle de la souris
@@ -23,11 +23,14 @@ export class SceneBase {
         // Création du sol (communs à toutes les scènes)
         this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 20, height: 20 }, this.scene);
         
-
         // Création des murs communs
         this.createWall("backWall", 20, 20, new BABYLON.Vector3(0, 5, 10), new BABYLON.Vector3(0, 0, 0));
         this.createWall("leftWall", 20, 20, new BABYLON.Vector3(-10, 5, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0));
         this.createWall("rightWall", 20, 20, new BABYLON.Vector3(10, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
+
+        // Créer le personnage ici
+        this.personnage = new BABYLON.MeshBuilder.CreateBox("personnage", { size: 1 }, this.scene);
+        this.personnage.position = new BABYLON.Vector3(0, 1, 0); // Position initiale du personnage
     }
 
     // Méthode pour gérer les entrées clavier
@@ -47,12 +50,14 @@ export class SceneBase {
             if (event.key === "ArrowDown") this.scene.inputStates.down = false;
         });
 
+        // Déplacer uniquement le personnage
         this.scene.onBeforeRenderObservable.add(() => {
             const speed = 0.1;
-            if (this.scene.inputStates.left) this.camera.position.x -= speed;
-            if (this.scene.inputStates.right) this.camera.position.x += speed;
-            if (this.scene.inputStates.up) this.camera.position.y += speed;
-            if (this.scene.inputStates.down) this.camera.position.y -= speed;
+
+            if (this.scene.inputStates.left) this.personnage.position.x -= speed;
+            if (this.scene.inputStates.right) this.personnage.position.x += speed;
+            if (this.scene.inputStates.up) this.personnage.position.z -= speed;  // Déplacement en avant (sur l'axe Z)
+            if (this.scene.inputStates.down) this.personnage.position.z += speed;  // Déplacement en arrière (sur l'axe Z)
         });
     }
 
