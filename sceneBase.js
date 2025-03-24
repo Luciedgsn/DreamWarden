@@ -17,6 +17,7 @@ export class SceneBase {
         this.camera = new BABYLON.FreeCamera("FixedCamera", new BABYLON.Vector3(0, 13, -16), this.scene);
         this.camera.setTarget(new BABYLON.Vector3(0, 2.5, 0));
         this.camera.attachControl(this.canvas, false); // Désactivation du contrôle de la souris
+        this.camera.inputs.clear(); // Supprime tous les contrôles de la caméra
 
         // Ajout de la lumière
         this.light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), this.scene);
