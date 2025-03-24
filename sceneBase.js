@@ -1,3 +1,5 @@
+import { Personnage } from './personnage.js';
+
 export class SceneBase {
     constructor(engine, canvas) {
         this.engine = engine;
@@ -29,8 +31,7 @@ export class SceneBase {
         this.createWall("rightWall", 20, 20, new BABYLON.Vector3(10, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
 
         // Créer le personnage ici
-        this.personnage = new BABYLON.MeshBuilder.CreateBox("personnage", { size: 1 }, this.scene);
-        this.personnage.position = new BABYLON.Vector3(0, 1, 0); // Position initiale du personnage
+        this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0));
     }
 
     // Méthode pour gérer les entrées clavier
@@ -54,10 +55,10 @@ export class SceneBase {
         this.scene.onBeforeRenderObservable.add(() => {
             const speed = 0.1;
 
-            if (this.scene.inputStates.left) this.personnage.position.x -= speed;
-            if (this.scene.inputStates.right) this.personnage.position.x += speed;
-            if (this.scene.inputStates.up) this.personnage.position.z -= speed;  // Déplacement en avant (sur l'axe Z)
-            if (this.scene.inputStates.down) this.personnage.position.z += speed;  // Déplacement en arrière (sur l'axe Z)
+            if (this.scene.inputStates.left) this.personnage.mesh.position.x -= speed;
+            if (this.scene.inputStates.right) this.personnage.mesh.position.x += speed;
+            if (this.scene.inputStates.up) this.personnage.mesh.position.z -= speed;  // Déplacement en avant (sur l'axe Z)
+            if (this.scene.inputStates.down) this.personnage.mesh.position.z += speed;  // Déplacement en arrière (sur l'axe Z)
         });
     }
 
