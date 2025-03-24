@@ -57,8 +57,8 @@ export class SceneBase {
 
             if (this.scene.inputStates.left) this.personnage.mesh.position.x -= speed;
             if (this.scene.inputStates.right) this.personnage.mesh.position.x += speed;
-            if (this.scene.inputStates.up) this.personnage.mesh.position.z -= speed;  // Déplacement en avant (sur l'axe Z)
-            if (this.scene.inputStates.down) this.personnage.mesh.position.z += speed;  // Déplacement en arrière (sur l'axe Z)
+            if (this.scene.inputStates.up) this.personnage.mesh.position.z += speed;  // Inversé : déplacement en arrière (sur l'axe Z)
+            if (this.scene.inputStates.down) this.personnage.mesh.position.z -= speed;  // Inversé : déplacement en avant (sur l'axe Z)
         });
     }
 
