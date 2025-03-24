@@ -30,8 +30,8 @@ window.addEventListener("DOMContentLoaded", function () {
         const speed = 0.1;
 
         // Chargement du modèle
-        BABYLON.SceneLoader.ImportMesh("", "asset/", "AnimPerso.glb", scene, function (meshes, particleSystems, skeletons, animationGroups) {
-            model = meshes[0];
+       BABYLON.SceneLoader.ImportMesh("", "asset/", "AnimPerso.glb", scene, function (meshes, particleSystems, skeletons, animationGroups) {
+           model = meshes[0];
 
             // Vérifications
             console.log("Modèle chargé :", model);
