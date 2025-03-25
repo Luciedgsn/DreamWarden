@@ -27,24 +27,7 @@ export class Scene1 extends SceneBase {
         groundMaterial.diffuseTexture.vScale = 10; // Répéter la texture sur l'axe V
         this.ground.material = groundMaterial;
 
-        // Agrandir les murs avec une épaisseur
-        this.createWall("backWall", 100, 20, new BABYLON.Vector3(0, 10, 50), new BABYLON.Vector3(0, 0, 0), 1);
-        this.createWall("leftWall", 100, 20, new BABYLON.Vector3(-50, 10, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0), 1);
-        this.createWall("rightWall", 100, 20, new BABYLON.Vector3(50, 10, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 1);
-        this.createWall("frontWall", 100, 20, new BABYLON.Vector3(0, 10, -50), new BABYLON.Vector3(0, Math.PI, 0), 1);
-
-        // Activer les collisions pour le sol et les murs
-        this.ground.checkCollisions = true;
-        this.scene.getMeshByName("backWall").checkCollisions = true;
-        this.scene.getMeshByName("leftWall").checkCollisions = true;
-        this.scene.getMeshByName("rightWall").checkCollisions = true;
-        this.scene.getMeshByName("frontWall").checkCollisions = true;
-
-        // Créer des murs invisibles pour les collisions
-        this.createInvisibleWall("collisionBackWall", 120, 20, new BABYLON.Vector3(0, 10, 55), new BABYLON.Vector3(0, 0, 0), 13); // Mur invisible plus épais
-        this.createInvisibleWall("collisionLeftWall", 120, 20, new BABYLON.Vector3(-60, 10, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0));
-        this.createInvisibleWall("collisionRightWall", 120, 20, new BABYLON.Vector3(60, 10, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
-        this.createInvisibleWall("collisionFrontWall", 120, 20, new BABYLON.Vector3(0, 10, -60), new BABYLON.Vector3(0, Math.PI, 0));
+        
 
         // Créer un matériau en pierre pour les murs
         const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", this.scene);
