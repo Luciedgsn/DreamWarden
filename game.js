@@ -2,16 +2,16 @@
 
 // Charger les classes
 import { Scene1 } from './scene1.js';
+import { SceneWelcome } from './sceneWelcome.js';
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 
-// Créer une instance de la scène 1
-let scene1 = new Scene1(engine, canvas);
+// Créer une instance de la scène d'accueil
+let welcomeScene = new SceneWelcome(engine, canvas);
 
-// Lancer la boucle de rendu
-scene1.renderScene();
-scene1.resizeScene();
+// Lancer la boucle de rendu de la scène d'accueil
+welcomeScene.renderScene();
 
 // Redimensionner le moteur Babylon.js lorsque la fenêtre est redimensionnée
 window.addEventListener("resize", () => {

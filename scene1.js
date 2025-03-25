@@ -52,11 +52,25 @@ export class Scene1 extends SceneBase {
         wallMaterial.diffuseTexture.uScale = 5; // Répéter la texture sur l'axe U
         wallMaterial.diffuseTexture.vScale = 5; // Répéter la texture sur l'axe V
 
+        // Vérifier le chargement de la texture
+        wallMaterial.diffuseTexture.onLoadObservable.add(() => {
+            console.log("Texture pierre.jpg chargée avec succès");
+        });
+
         // Appliquer la texture en pierre aux murs
-        this.scene.getMeshByName("backWall").material = wallMaterial;
-        this.scene.getMeshByName("leftWall").material = wallMaterial;
-        this.scene.getMeshByName("rightWall").material = wallMaterial;
-        this.scene.getMeshByName("frontWall").material = wallMaterial;
+        const backWall = this.scene.getMeshByName("backWall");
+        const leftWall = this.scene.getMeshByName("leftWall");
+        const rightWall = this.scene.getMeshByName("rightWall");
+        const frontWall = this.scene.getMeshByName("frontWall");
+
+        if (backWall && leftWall && rightWall && frontWall) {
+            backWall.material = wallMaterial;
+            leftWall.material = wallMaterial;
+            rightWall.material = wallMaterial;
+            frontWall.material = wallMaterial;
+        } else {
+            console.error("Les murs n'ont pas été trouvés dans la scène");
+        }
 
         // Créer le personnage ici et le placer au centre de la pièce
         this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0));

@@ -9,6 +9,8 @@ export class Personnage {
         this.animationGroupSprinting = null; // Animation de sprint
         this.isRunning = false; // Indicateur pour savoir si l'animation de course est en cours
         this.isSprinting = false; // Indicateur pour savoir si l'animation de sprint est en cours
+        this.canCastSpell = true; // Indicateur pour savoir si le joueur peut lancer un sort
+        this.spellCooldown = 700; // Délai entre deux sorts en millisecondes
 
         // Charger le modèle 3D du personnage à partir du fichier .glb
         BABYLON.SceneLoader.ImportMesh("", "asset/", "AnimPerso.glb", this.scene, (meshes, particleSystems, skeletons, animationGroups) => {
@@ -35,6 +37,13 @@ export class Personnage {
 
                 // Appel de la méthode pour activer le mouvement
                 this.enableMovement();
+
+                // Ajouter un gestionnaire de clic pour lancer le sort
+                this.scene.onPointerDown = (evt, pickResult) => {
+                    if (pickResult.hit) {
+                        this.launchSpell(pickResult.pickedPoint);
+                    }
+                };
             } else {
                 console.log("Erreur lors du chargement du personnage");
             }
@@ -137,5 +146,48 @@ export class Personnage {
         const cameraOffset = new BABYLON.Vector3(0, 10, -10);
         this.scene.activeCamera.position = this.mesh.position.add(cameraOffset);
         this.scene.activeCamera.setTarget(this.mesh.position);
+    }
+
+    launchSpell(targetPoint) {
+        if (!this.canCastSpell) return; // Vérifier si le joueur peut lancer un sort
+
+        // Créer une boule de feu
+        const fireball = BABYLON.MeshBuilder.CreateSphere("fireball", { diameter: 1 }, this.scene);
+        fireball.position = this.mesh.position.clone();
+        fireball.position.y += 1; // Ajuster la hauteur de la boule de feu
+
+        // Créer un matériau pour la boule de feu
+        const fireballMaterial = new BABYLON.StandardMaterial("fireballMaterial", this.scene);
+        fireballMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Couleur rouge
+        fireball.material = fireballMaterial;
+
+        // Calculer la direction de la boule de feu
+        const direction = targetPoint.subtract(fireball.position).normalize();
+        const speed = 0.5;
+        const maxDistance = 8; // Distance maximale de la boule de feu
+        let distanceTravelled = 0;
+
+        // Ajouter une animation pour déplacer la boule de feu
+        this.scene.onBeforeRenderObservable.add(() => {
+            const deltaMove = direction.scale(speed);
+            fireball.position.addInPlace(deltaMove);
+            distanceTravelled += deltaMove.length();
+
+            // Vérifier la distance parcourue
+            if (distanceTravelled >= maxDistance) {
+                fireball.dispose(); // Supprimer la boule de feu si elle dépasse la distance maximale
+            }
+
+            // Vérifier les collisions avec le sol
+            if (fireball.position.y <= 0) {
+                fireball.dispose(); // Supprimer la boule de feu si elle touche le sol
+            }
+        });
+
+        // Définir un délai avant de pouvoir lancer un autre sort
+        this.canCastSpell = false;
+        setTimeout(() => {
+            this.canCastSpell = true;
+        }, this.spellCooldown);
     }
 }
