@@ -85,6 +85,7 @@ export class Scene1 extends SceneBase {
                     if (this.enemy.health <= 0) {
                         this.enemy.dispose(); // Supprimer l'ennemi
                         this.showCompletionMessage();
+                        this.showTeleportationMessage();
                         this.teleportToScene2();
                     }
                 }
@@ -106,6 +107,29 @@ export class Scene1 extends SceneBase {
         message.fontSize = 50;
         message.top = "40%";
         advancedTexture.addControl(message);
+    }
+
+    showTeleportationMessage() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const background = new BABYLON.GUI.Rectangle();
+        background.width = "100%";
+        background.height = "100%";
+        background.background = "black";
+        advancedTexture.addControl(background);
+
+        const completionMessage = new BABYLON.GUI.TextBlock();
+        completionMessage.text = "Salle terminée";
+        completionMessage.color = "white";
+        completionMessage.fontSize = 50;
+        completionMessage.top = "-10%";
+        advancedTexture.addControl(completionMessage);
+
+        const teleportationMessage = new BABYLON.GUI.TextBlock();
+        teleportationMessage.text = "Téléportation en cours...";
+        teleportationMessage.color = "white";
+        teleportationMessage.fontSize = 50;
+        teleportationMessage.top = "10%";
+        advancedTexture.addControl(teleportationMessage);
     }
 
     teleportToScene2() {
