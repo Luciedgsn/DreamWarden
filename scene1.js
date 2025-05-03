@@ -1,6 +1,6 @@
 // scene1.js
 
-import { SceneBase } from './sceneBase.js';
+import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
 import { Scene2 } from './scene2.js';
 
