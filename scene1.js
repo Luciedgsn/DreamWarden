@@ -2,6 +2,7 @@
 
 import { SceneBase } from './sceneBase.js';
 import { Personnage } from './personnage.js';
+import { Scene2 } from './scene2.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -26,8 +27,6 @@ export class Scene1 extends SceneBase {
         groundMaterial.diffuseTexture.uScale = 10; // Répéter la texture sur l'axe U
         groundMaterial.diffuseTexture.vScale = 10; // Répéter la texture sur l'axe V
         this.ground.material = groundMaterial;
-
-        
 
         // Créer un matériau en pierre pour les murs
         const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", this.scene);
@@ -58,8 +57,92 @@ export class Scene1 extends SceneBase {
         // Créer le personnage ici et le placer au centre de la pièce
         this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0));
 
+        // Créer l'ennemi sous la forme d'un cube rouge
+        this.enemy = BABYLON.MeshBuilder.CreateBox("enemy", { size: 2 }, this.scene);
+        this.enemy.position = new BABYLON.Vector3(10, 1, 0);
+        const enemyMaterial = new BABYLON.StandardMaterial("enemyMaterial", this.scene);
+        enemyMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Couleur rouge
+        this.enemy.material = enemyMaterial;
+        this.enemy.checkCollisions = true; // Activer les collisions pour l'ennemi
+        this.enemy.health = 3; // Nombre de coups nécessaires pour tuer l'ennemi
+
+        // Ajouter un observateur pour détecter les collisions avec les boules de feu et le personnage
+        this.scene.onBeforeRenderObservable.add(() => {
+            this.checkCollisions();
+        });
+
         // Charger et dupliquer le modèle d'herbe sur le sol
         await this.loadAndPlaceGrass();
+    }
+
+    checkCollisions() {
+        this.scene.meshes.forEach(mesh => {
+            if (mesh.name.startsWith("fireball")) {
+                if (mesh.intersectsMesh(this.enemy, false)) {
+                    this.enemy.health -= 1;
+                    mesh.dispose(); // Supprimer la boule de feu
+
+                    if (this.enemy.health <= 0) {
+                        this.enemy.dispose(); // Supprimer l'ennemi
+                        this.showCompletionMessage();
+                        this.showTeleportationMessage();
+                        this.teleportToScene2();
+                    }
+                }
+            }
+        });
+
+        // Vérifier les collisions entre le personnage et l'ennemi
+        if (this.personnage.mesh.intersectsMesh(this.enemy, false)) {
+            console.log("Collision détectée entre le personnage et l'ennemi");
+            // Ajouter ici le code pour gérer la collision entre le personnage et l'ennemi
+        }
+    }
+
+    showCompletionMessage() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const message = new BABYLON.GUI.TextBlock();
+        message.text = "Salle terminée";
+        message.color = "white";
+        message.fontSize = 50;
+        message.top = "40%";
+        advancedTexture.addControl(message);
+    }
+
+    showTeleportationMessage() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const background = new BABYLON.GUI.Rectangle();
+        background.width = "100%";
+        background.height = "100%";
+        background.background = "black";
+        advancedTexture.addControl(background);
+
+        const completionMessage = new BABYLON.GUI.TextBlock();
+        completionMessage.text = "Salle terminée";
+        completionMessage.color = "white";
+        completionMessage.fontSize = 50;
+        completionMessage.top = "-10%";
+        advancedTexture.addControl(completionMessage);
+
+        const teleportationMessage = new BABYLON.GUI.TextBlock();
+        teleportationMessage.text = "Téléportation en cours...";
+        teleportationMessage.color = "white";
+        teleportationMessage.fontSize = 50;
+        teleportationMessage.top = "10%";
+        advancedTexture.addControl(teleportationMessage);
+    }
+
+    teleportToScene2() {
+        setTimeout(() => {
+            // Supprimer la scène actuelle et libérer la mémoire
+            this.scene.dispose();
+
+            // Créer la nouvelle scène 2
+            const scene2 = new Scene2(this.engine, this.canvas);
+
+            // Lancer la boucle de rendu de la scène 2
+            scene2.renderScene();
+        }, 2000); // Délai de 2 secondes avant de téléporter le joueur
     }
 
     createWall(name, width, height, position, rotation, thickness = 1) {

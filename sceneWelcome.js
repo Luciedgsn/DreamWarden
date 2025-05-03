@@ -6,6 +6,7 @@ export class SceneWelcome {
         this.canvas = canvas;
         this.scene = new BABYLON.Scene(engine);
         this.gameScene = null; // Stocker la scène de jeu
+        this.backgroundMusic = null; // Stocker la bande sonore
 
         // Créer une caméra
         const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), this.scene);
@@ -40,6 +41,9 @@ export class SceneWelcome {
         this.instructionText.fontSize = 30;
         this.instructionText.top = "10%";
         advancedTexture.addControl(this.instructionText);
+
+        // Ajouter la bande sonore
+        this.addBackgroundMusic();
 
         // Lancer le rendu de l'écran d'accueil immédiatement
         this.renderScene();
@@ -105,7 +109,39 @@ export class SceneWelcome {
         this.scene.beginAnimation(image, 0, 60, true);
     }
 
+    addBackgroundMusic() {
+        this.backgroundMusic = new BABYLON.Sound("backgroundMusic", "asset/background.mp3", this.scene, () => {
+            console.log("Bande sonore chargée et prête à jouer.");
+            this.backgroundMusic.play();
+        }, {
+            loop: true,
+            autoplay: true,
+            volume: 0.5
+        });
+
+        this.backgroundMusic.onended = () => {
+            console.log("Bande sonore terminée.");
+        };
+
+        this.backgroundMusic.onplay = () => {
+            console.log("Bande sonore en cours de lecture.");
+        };
+
+        this.backgroundMusic.onpause = () => {
+            console.log("Bande sonore en pause.");
+        };
+
+        this.backgroundMusic.onstop = () => {
+            console.log("Bande sonore arrêtée.");
+        };
+    }
+
     startGame() {
+        // Arrêter la bande sonore
+        if (this.backgroundMusic) {
+            this.backgroundMusic.stop();
+        }
+
         // Passer à la scène de jeu
         this.engine.stopRenderLoop();
         this.gameScene.renderScene();
