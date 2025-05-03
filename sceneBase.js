@@ -14,35 +14,32 @@ export class SceneBase {
     // Initialisation de la scène avec les éléments communs
     initScene() {
         // Création de la caméra fixe
-        this.camera = new BABYLON.FreeCamera("FixedCamera", new BABYLON.Vector3(0, 10, -10), this.scene);
-        this.camera.setTarget(new BABYLON.Vector3(0, 2.5, 0));
+        this.camera = new BABYLON.FreeCamera("FixedCamera", new BABYLON.Vector3(0, 5, -5), this.scene);
+        this.camera.setTarget(new BABYLON.Vector3(0, 1.25, 0));
         this.camera.attachControl(this.canvas, false); // Désactivation du contrôle de la souris
 
         // Ajout de la lumière
         this.light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), this.scene);
         this.light.intensity = 0.7;
 
-        // Création du sol (communs à toutes les scènes)
-        this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 20, height: 20 }, this.scene);
+         // Création du sol
+        this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 10, height: 10 }, this.scene);
 
-        // Agrandir les murs avec une épaisseur
-        this.createWall("backWall", 100, 20, new BABYLON.Vector3(0, 10, 50), new BABYLON.Vector3(0, 0, 0), 1);
-        this.createWall("leftWall", 100, 20, new BABYLON.Vector3(-50, 10, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0), 1);
-        this.createWall("rightWall", 100, 20, new BABYLON.Vector3(50, 10, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 1);
-        this.createWall("frontWall", 100, 20, new BABYLON.Vector3(0, 10, -50), new BABYLON.Vector3(0, Math.PI, 0), 1);
+        // Création des murs
+        this.createWall("backWall", 50, 10, new BABYLON.Vector3(0, 5, 25), new BABYLON.Vector3(0, 0, 0), 0.5);
+        this.createWall("leftWall", 50, 10, new BABYLON.Vector3(-25, 5, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0), 0.5);
+        this.createWall("rightWall", 50, 10, new BABYLON.Vector3(25, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 0.5);
+        const bottomWall = this.createWall("frontWall", 50, 10, new BABYLON.Vector3(0, 5, -25), new BABYLON.Vector3(0, Math.PI, 0), 0.5);
 
-        // Activer les collisions pour le sol et les murs
+        // Rendre le mur du bas invisible mais conserver les collisions
+        bottomWall.isVisible = false;
+        bottomWall.checkCollisions = true;
+
+        // Activer les collisions pour le sol et les autres murs
         this.ground.checkCollisions = true;
         this.scene.getMeshByName("backWall").checkCollisions = true;
         this.scene.getMeshByName("leftWall").checkCollisions = true;
         this.scene.getMeshByName("rightWall").checkCollisions = true;
-        this.scene.getMeshByName("frontWall").checkCollisions = true;
-
-        // Créer des murs invisibles pour les collisions
-        this.createInvisibleWall("collisionBackWall", 120, 20, new BABYLON.Vector3(0, 10, 55), new BABYLON.Vector3(0, 0, 0), 13); // Mur invisible plus épais
-        this.createInvisibleWall("collisionLeftWall", 120, 20, new BABYLON.Vector3(-60, 10, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0));
-        this.createInvisibleWall("collisionRightWall", 120, 20, new BABYLON.Vector3(60, 10, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
-        this.createInvisibleWall("collisionFrontWall", 120, 20, new BABYLON.Vector3(0, 10, -60), new BABYLON.Vector3(0, Math.PI, 0));
     }
 
     // Méthode pour créer un mur
