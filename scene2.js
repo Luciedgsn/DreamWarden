@@ -2,6 +2,7 @@
 
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
+import { Enemy } from './enemy.js';
 
 export class Scene2 extends SceneBase {
     constructor(engine, canvas) {
@@ -58,6 +59,9 @@ export class Scene2 extends SceneBase {
 
         // Charger et dupliquer le modèle d'herbe sur le sol
         await this.loadAndPlaceGrass();
+
+        // Créer un ennemi
+                this.enemy = new Enemy(this.scene, this.personnage);
     }
 
     checkCollisions() {

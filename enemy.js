@@ -2,7 +2,8 @@
 
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
-import { Scene2 } from './scene2.js'; // Assurez-vous que Scene2 est correctement importé
+import { Scene2 } from './Scene2.js'; 
+import { Scene3 } from './scene3.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -52,7 +53,7 @@ export class Enemy {
                         this.destroy(); // Détruire l'ennemi
                         this.showCompletionMessage();
                         this.showTeleportationMessage();
-                        this.teleportToScene2();
+                        this.teleportToScene();
                     }
                 }
             }
@@ -98,24 +99,31 @@ export class Enemy {
         advancedTexture.addControl(teleportationMessage);
     }
 
-    teleportToScene2() {
+    teleportToScene() {
         // Vérifier si la scène actuelle est de type Scene1
         console.log("this.scene.sceneName :", this.scene.sceneName);
         if (this.scene.sceneName === "Scene1") {
             setTimeout(() => {
                 console.log("Téléportation vers Scene2...");
-
                 // Créer la nouvelle scène 2 avant de supprimer la scène actuelle
                 const scene2 = new Scene2(this.scene.getEngine(), this.scene.getEngine().getRenderingCanvas());
-
                 // Supprimer la scène actuelle après avoir créé Scene2
                 this.scene.dispose();
-
                 // Lancer la boucle de rendu de la scène 2
                 scene2.renderScene();
             }, 2000); // Délai de 2 secondes avant de téléporter le joueur
-        } else {
-            console.log("La téléportation vers Scene2 est désactivée car la scène actuelle n'est pas Scene1.");
+        } else if (this.scene.sceneName === "Scene2") {
+            setTimeout(() => {
+                console.log("Téléportation vers Scene3...");
+                // Créer la nouvelle scène 3 avant de supprimer la scène actuelle
+                const scene3 = new Scene3(this.scene.getEngine(), this.scene.getEngine().getRenderingCanvas());
+                // Supprimer la scène actuelle après avoir créé Scene3
+                this.scene.dispose();
+                // Lancer la boucle de rendu de la scène 3
+                scene3.renderScene();
+            }, 2000); // Délai de 2 secondes avant de téléporter le joueur
+        }else {
+            console.log("La téléportation vers la scène est désactivée car la scène actuelle n'est pas mentionnée.");
         }
     }
 

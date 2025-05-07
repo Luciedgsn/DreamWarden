@@ -1,14 +1,13 @@
-// scene1.js
+// scene2.js
 
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
-import { Enemy } from './enemy.js'; // Importer la classe Enemy
 
-export class Scene1 extends SceneBase {
+export class Scene3 extends SceneBase {
     constructor(engine, canvas) {
         super(engine, canvas);
-        this.sceneName = "Scene1"; // Nom de la scène
-        this.scene.sceneName = "Scene1";
+        this.sceneName = "Scene3"; // Nom de la scène
+        this.scene.sceneName = "Scene3";
         this.initScene();
     }
 
@@ -16,18 +15,16 @@ export class Scene1 extends SceneBase {
         super.initScene();
 
         // Restaurer la lumière naturelle
-        this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8); // Fond gris clair
+        this.scene.clearColor = new BABYLON.Color3(1, 0.8, 0.86) // Fond gris clair
         this.light.intensity = 0.7; // Réactiver la lumière hémisphérique
 
-        // Agrandir le sol avec le bon motif 
+        // Agrandir le sol
         this.ground.dispose(); // Supprimer l'ancien sol
         this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 100, height: 100 }, this.scene); // Nouveau sol beaucoup plus grand
 
-        // Créer un matériau terreux pour le sol
+        // Créer un matériau bleu pour le sol
         const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
-        groundMaterial.diffuseTexture = new BABYLON.Texture("asset/sol.jpg", this.scene);
-        groundMaterial.diffuseTexture.uScale = 10; // Répéter la texture sur l'axe U
-        groundMaterial.diffuseTexture.vScale = 10; // Répéter la texture sur l'axe V
+        groundMaterial.diffuseColor = new BABYLON.Color3(1, 0.8, 0.86); // Couleur rose
         this.ground.material = groundMaterial;
 
         // Créer un matériau en pierre pour les murs
@@ -59,17 +56,45 @@ export class Scene1 extends SceneBase {
         // Créer le personnage ici et le placer au centre de la pièce
         this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0));
 
-
         // Charger et dupliquer le modèle d'herbe sur le sol
         await this.loadAndPlaceGrass();
-
-        // Créer un ennemi
-        this.enemy = new Enemy(this.scene, this.personnage);
     }
 
-    
+    checkCollisions() {
+        // Pas d'ennemi dans cette scène, donc pas de collisions à vérifier
+    }
 
-    async loadAndPlaceGrass() { // Placer herbe uniquement dans cette scène
+    showCompletionMessage() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const message = new BABYLON.GUI.TextBlock();
+        message.text = "Salle terminée";
+        message.color = "white";
+        message.fontSize = 50;
+        message.top = "40%";
+        advancedTexture.addControl(message);
+    }
+
+    teleportToScene2() {
+        // Pas de téléportation dans cette scène
+    }
+
+    createWall(name, width, height, position, rotation, thickness = 1) {
+        const wall = BABYLON.MeshBuilder.CreateBox(name, { width, height, depth: thickness }, this.scene);
+        wall.position = position;
+        wall.rotation = rotation;
+        return wall;
+    }
+
+    createInvisibleWall(name, width, height, position, rotation, thickness = 1) {
+        const wall = BABYLON.MeshBuilder.CreateBox(name, { width, height, depth: thickness }, this.scene);
+        wall.position = position;
+        wall.rotation = rotation;
+        wall.isVisible = false; // Rendre le mur invisible
+        wall.checkCollisions = true; // Activer les collisions pour le mur invisible
+        return wall;
+    }
+
+    async loadAndPlaceGrass() {
         const grassMeshes = await BABYLON.SceneLoader.ImportMeshAsync("", "asset/", "Herbe.glb", this.scene);
         const grass = grassMeshes.meshes.find(mesh => mesh.geometry); // Trouver le mesh avec de la géométrie
 
