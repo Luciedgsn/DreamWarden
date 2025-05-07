@@ -8,6 +8,7 @@ import { Enemy } from './enemy.js'; // Importer la classe Enemy
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
         super(engine, canvas);
+        this.sceneName = "Scene1"; // Nom de la scène
         this.initScene();
     }
 
@@ -63,7 +64,7 @@ export class Scene1 extends SceneBase {
         await this.loadAndPlaceGrass();
 
         // Créer un ennemi
-    this.enemy = new Enemy(this.scene);
+        this.enemy = new Enemy(this.scene, this.personnage);
     }
 
     

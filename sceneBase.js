@@ -5,6 +5,7 @@ export class SceneBase {
         this.engine = engine;
         this.canvas = canvas;
         this.scene = new BABYLON.Scene(engine);
+        this.sceneName = "Base"
         this.camera = null;
         this.light = null;
         this.ground = null;

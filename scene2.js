@@ -6,6 +6,7 @@ import { Personnage } from './personnage.js';
 export class Scene2 extends SceneBase {
     constructor(engine, canvas) {
         super(engine, canvas);
+        this.sceneName = "Scene2"; // Nom de la scène
         this.initScene();
     }
 
