@@ -32,6 +32,7 @@ export class SceneBase {
         this.createWall("rightWall", 50, 10, new BABYLON.Vector3(25, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 0.5);
         const bottomWall = this.createWall("frontWall", 50, 10, new BABYLON.Vector3(0, 5, -25), new BABYLON.Vector3(0, Math.PI, 0), 0.5);
 
+
         
         // Rendre le mur du bas invisible mais conserver les collisions
         bottomWall.isVisible = false;
@@ -42,11 +43,12 @@ export class SceneBase {
         this.scene.getMeshByName("backWall").checkCollisions = true;
         this.scene.getMeshByName("leftWall").checkCollisions = true;
         this.scene.getMeshByName("rightWall").checkCollisions = true;
+
     }
 
     // Méthode pour créer un mur
-    createWall(name, width, height, position, rotation) {
-        const wall = BABYLON.MeshBuilder.CreatePlane(name, { width, height }, this.scene);
+    createWall(name, width, height, position, rotation, thickness = 1) {
+        const wall = BABYLON.MeshBuilder.CreateBox(name, { width: width / 2, height: height / 2, depth: thickness }, this.scene);
         wall.position = position;
         wall.rotation = rotation;
         return wall;
@@ -54,6 +56,7 @@ export class SceneBase {
 
     createInvisibleWall(name, width, height, position, rotation, thickness = 1) {
         const wall = BABYLON.MeshBuilder.CreateBox(name, { width, height, depth: thickness }, this.scene);
+
         wall.position = position;
         wall.rotation = rotation;
         wall.isVisible = false; // Rendre le mur invisible
