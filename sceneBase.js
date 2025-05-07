@@ -47,6 +47,9 @@ export class SceneBase {
         this.createInvisibleWall("invisibleLeftWall", 50, 10, new BABYLON.Vector3(-25.5, 5, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0), 0.5);
         this.createInvisibleWall("invisibleRightWall", 50, 10, new BABYLON.Vector3(25.5, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 0.5);
         this.createInvisibleWall("invisibleFrontWall", 50, 10, new BABYLON.Vector3(0, 5, -25.5), new BABYLON.Vector3(0, Math.PI, 0), 0.5);
+
+        // Ajouter un mur invisible en bas (sous le sol)
+        this.createInvisibleWall("invisibleBottomWall", 50, 1, new BABYLON.Vector3(0, 2, 0), new BABYLON.Vector3(0, 0, 0), 0.5);
     }
 
     // Méthode pour créer un mur

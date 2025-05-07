@@ -1,9 +1,9 @@
 // scene1.js
 
 import { SceneBase } from './scenebase.js';
-import { Personnage } from './personnage.js';
 import { Scene2 } from './Scene2.js'; 
 import { Scene3 } from './scene3.js';
+import { Scene4 } from './Scene4.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -122,6 +122,16 @@ export class Enemy {
                 // Lancer la boucle de rendu de la scène 3
                 scene3.renderScene();
             }, 2000); // Délai de 2 secondes avant de téléporter le joueur
+        } else if (this.scene.sceneName === "Scene3") {
+                setTimeout(() => {
+                    console.log("Téléportation vers Scene4...");
+                    // Créer la nouvelle scène 4 avant de supprimer la scène actuelle
+                    const scene4 = new Scene4(this.scene.getEngine(), this.scene.getEngine().getRenderingCanvas());
+                    // Supprimer la scène actuelle après avoir créé Scene4
+                    this.scene.dispose();
+                    // Lancer la boucle de rendu de la scène 4
+                    scene4.renderScene();
+                }, 2000); // Délai de 2 secondes avant de téléporter le joueur
         }else {
             console.log("La téléportation vers la scène est désactivée car la scène actuelle n'est pas mentionnée.");
         }

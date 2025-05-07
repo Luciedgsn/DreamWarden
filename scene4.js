@@ -2,13 +2,12 @@
 
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
-import { Enemy } from './enemy.js';
 
-export class Scene2 extends SceneBase {
+export class Scene4 extends SceneBase {
     constructor(engine, canvas) {
         super(engine, canvas);
-        this.sceneName = "Scene2"; // Nom de la scène
-        this.scene.sceneName = "Scene2";
+        this.sceneName = "Scene4"; // Nom de la scène
+        this.scene.sceneName = "Scene4";
         this.initScene();
     }
 
@@ -16,7 +15,7 @@ export class Scene2 extends SceneBase {
         super.initScene();
 
         // Restaurer la lumière naturelle
-        this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8); // Fond gris clair
+        this.scene.clearColor = new BABYLON.Color3(1, 0.8, 0.86) // Fond gris clair
         this.light.intensity = 0.7; // Réactiver la lumière hémisphérique
 
         // Agrandir le sol
@@ -25,7 +24,7 @@ export class Scene2 extends SceneBase {
 
         // Créer un matériau bleu pour le sol
         const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
-        groundMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1); // Couleur bleue
+        groundMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0.8); // Couleur jaune 
         this.ground.material = groundMaterial;
 
         // Créer un matériau en pierre pour les murs
@@ -59,11 +58,7 @@ export class Scene2 extends SceneBase {
 
         // Charger et dupliquer le modèle d'herbe sur le sol
         await this.loadAndPlaceGrass();
-
-        // Créer un ennemi
-                this.enemy = new Enemy(this.scene, this.personnage);
     }
-
 
     showCompletionMessage() {
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -83,28 +78,5 @@ export class Scene2 extends SceneBase {
             console.error("Aucun mesh avec de la géométrie trouvé dans le modèle d'herbe.");
             return;
         }
-
-        // Vérifier le chargement du modèle d'herbe
-        console.log("Modèle d'herbe chargé :", grass);
-
-        // Redimensionner et positionner l'herbe
-        grass.scaling = new BABYLON.Vector3(1, 1, 1);
-        grass.position.y = 0.1; // Légèrement au-dessus du sol
-
-        // Dupliquer l'herbe de manière aléatoire sur le sol
-        const numGrassInstances = 500; // Nombre de brins d'herbe à placer
-        const groundSize = 100; // Taille du sol
-        for (let i = 0; i < numGrassInstances; i++) {
-            const x = Math.random() * groundSize - groundSize / 2;
-            const z = Math.random() * groundSize - groundSize / 2;
-            const instance = grass.createInstance(`grass_${i}`);
-            instance.position = new BABYLON.Vector3(x, 0.1, z);
-
-            // Vérifier la création des instances
-            console.log(`Instance ${i} positionnée à :`, instance.position);
         }
-
-        // Masquer le modèle original
-        grass.isVisible = false;
-    }
 }
