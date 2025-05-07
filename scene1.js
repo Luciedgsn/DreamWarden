@@ -17,7 +17,7 @@ export class Scene1 extends SceneBase {
         this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8); // Fond gris clair
         this.light.intensity = 0.7; // Réactiver la lumière hémisphérique
 
-        // Agrandir le sol
+        // Agrandir le sol avec le bon motif 
         this.ground.dispose(); // Supprimer l'ancien sol
         this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 100, height: 100 }, this.scene); // Nouveau sol beaucoup plus grand
 
@@ -145,23 +145,7 @@ export class Scene1 extends SceneBase {
         }, 2000); // Délai de 2 secondes avant de téléporter le joueur
     }
 
-    createWall(name, width, height, position, rotation, thickness = 1) {
-        const wall = BABYLON.MeshBuilder.CreateBox(name, { width, height, depth: thickness }, this.scene);
-        wall.position = position;
-        wall.rotation = rotation;
-        return wall;
-    }
-
-    createInvisibleWall(name, width, height, position, rotation, thickness = 1) {
-        const wall = BABYLON.MeshBuilder.CreateBox(name, { width, height, depth: thickness }, this.scene);
-        wall.position = position;
-        wall.rotation = rotation;
-        wall.isVisible = false; // Rendre le mur invisible
-        wall.checkCollisions = true; // Activer les collisions pour le mur invisible
-        return wall;
-    }
-
-    async loadAndPlaceGrass() {
+    async loadAndPlaceGrass() { // Placer herbe uniquement dans cette scène
         const grassMeshes = await BABYLON.SceneLoader.ImportMeshAsync("", "asset/", "Herbe.glb", this.scene);
         const grass = grassMeshes.meshes.find(mesh => mesh.geometry); // Trouver le mesh avec de la géométrie
 
