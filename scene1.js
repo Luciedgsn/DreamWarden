@@ -9,6 +9,7 @@ export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
         super(engine, canvas);
         this.sceneName = "Scene1"; // Nom de la scène
+        this.scene.sceneName = "Scene1";
         this.initScene();
     }
 
