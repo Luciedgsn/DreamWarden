@@ -31,25 +31,6 @@ export class Enemy {
         ));
     }
 
-    openDoor() {
-        // Supprimer une partie du mur de droite pour créer une porte
-        const rightWall = this.scene.getMeshByName("rightWall");
-        if (rightWall) {
-            rightWall.dispose(); // Supprimer le mur de droite
-            this.createWall("rightWallTop", 100, 10, new BABYLON.Vector3(50, 15, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
-            this.createWall("rightWallBottom", 100, 10, new BABYLON.Vector3(50, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
-        }
-
-        // Détecter la traversée de la porte par le personnage
-        this.scene.onBeforeRenderObservable.add(() => {
-            const personnage = this.scene.getMeshByName("personnage");
-            if (personnage && personnage.position.x > 48) {
-                console.log("Personnage a traversé la porte. Chargement de la scène 2...");
-                this.loadScene2();
-            }
-        });
-    }
-
     loadScene2() {
         // Supprimer la scène actuelle et libérer la mémoire
         this.scene.dispose();
