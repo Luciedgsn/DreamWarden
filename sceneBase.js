@@ -23,27 +23,30 @@ export class SceneBase {
         this.light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), this.scene);
         this.light.intensity = 0.7;
 
-         // Création du sol
+        // Création du sol
         this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 10, height: 10 }, this.scene);
 
-        // Création des murs
+        // Création des murs visibles
         this.createWall("backWall", 50, 10, new BABYLON.Vector3(0, 5, 25), new BABYLON.Vector3(0, 0, 0), 0.5);
         this.createWall("leftWall", 50, 10, new BABYLON.Vector3(-25, 5, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0), 0.5);
         this.createWall("rightWall", 50, 10, new BABYLON.Vector3(25, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 0.5);
         const bottomWall = this.createWall("frontWall", 50, 10, new BABYLON.Vector3(0, 5, -25), new BABYLON.Vector3(0, Math.PI, 0), 0.5);
 
-
-        
         // Rendre le mur du bas invisible mais conserver les collisions
         bottomWall.isVisible = false;
         bottomWall.checkCollisions = true;
 
-        // Activer les collisions pour le sol et les autres murs
+        // Activer les collisions pour le sol et les autres murs visibles
         this.ground.checkCollisions = true;
         this.scene.getMeshByName("backWall").checkCollisions = true;
         this.scene.getMeshByName("leftWall").checkCollisions = true;
         this.scene.getMeshByName("rightWall").checkCollisions = true;
 
+        // Création des murs invisibles pour empêcher le joueur de traverser
+        this.createInvisibleWall("invisibleBackWall", 50, 10, new BABYLON.Vector3(0, 5, 25.5), new BABYLON.Vector3(0, 0, 0), 0.5);
+        this.createInvisibleWall("invisibleLeftWall", 50, 10, new BABYLON.Vector3(-25.5, 5, 0), new BABYLON.Vector3(0, -Math.PI / 2, 0), 0.5);
+        this.createInvisibleWall("invisibleRightWall", 50, 10, new BABYLON.Vector3(25.5, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0), 0.5);
+        this.createInvisibleWall("invisibleFrontWall", 50, 10, new BABYLON.Vector3(0, 5, -25.5), new BABYLON.Vector3(0, Math.PI, 0), 0.5);
     }
 
     // Méthode pour créer un mur
