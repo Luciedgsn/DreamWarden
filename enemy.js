@@ -1,77 +1,126 @@
-// enemy.js
+// scene1.js
 
-export class Enemy {
-    constructor(scene, position = new BABYLON.Vector3(0, 1, 0), size = 2) {
-        this.scene = scene;
-        this.position = position;
-        this.size = size;
+import { SceneBase } from './scenebase.js';
+import { Personnage } from './personnage.js';
+import { Scene2 } from './scene2.js'; // Assurez-vous que Scene2 est correctement importé
 
-        // Créer un cube rouge
-        this.enemy = BABYLON.MeshBuilder.CreateBox("redCube", { size: this.size }, this.scene);
-        this.enemy.position = this.position;
-        const redMaterial = new BABYLON.StandardMaterial("redMat", this.scene);
-        redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0);
-        this.enemy.material = redMaterial;
-
-        // Détecter les clics sur le cube rouge
-        this.clickCount = 0;
-        this.enemy.actionManager = new BABYLON.ActionManager(this.scene);
-        this.enemy.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnPickTrigger,
-            () => {
-                this.clickCount++;
-                console.log(`Clic numéro: ${this.clickCount}`);
-
-                // Ouvrir une porte dans le mur de droite après 3 clics
-                if (this.clickCount === 3) {
-                    console.log("Trois clics effectués. Ouverture de la porte...");
-                    this.openDoor();
-                }
-            }
-        ));
+export class Scene1 extends SceneBase {
+    constructor(engine, canvas) {
+        super(engine, canvas);
+        this.initScene();
     }
 
-    openDoor() {
-        // Supprimer une partie du mur de droite pour créer une porte
-        const rightWall = this.scene.getMeshByName("rightWall");
-        if (rightWall) {
-            rightWall.dispose(); // Supprimer le mur de droite
-            this.createWall("rightWallTop", 100, 10, new BABYLON.Vector3(50, 15, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
-            this.createWall("rightWallBottom", 100, 10, new BABYLON.Vector3(50, 5, 0), new BABYLON.Vector3(0, Math.PI / 2, 0));
-        }
+    async initScene() {
+        super.initScene();
 
-        // Détecter la traversée de la porte par le personnage
+    }
+}
+
+export class Enemy {
+    constructor(scene, personnage, position = new BABYLON.Vector3(10, 1, 0), size = 2, health = 3) {
+        this.scene = scene;
+        this.personnage = personnage; // Référence au personnage
+        this.position = position;
+        this.size = size;
+        this.health = health; // Nombre de coups nécessaires pour tuer l'ennemi
+
+        // Créer un cube rouge pour représenter l'ennemi
+        this.enemy = BABYLON.MeshBuilder.CreateBox("enemy", { size: this.size }, this.scene);
+        this.enemy.position = this.position;
+        const enemyMaterial = new BABYLON.StandardMaterial("enemyMaterial", this.scene);
+        enemyMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Couleur rouge
+        this.enemy.material = enemyMaterial;
+
+        // Activer les collisions pour l'ennemi
+        this.enemy.checkCollisions = true;
+
+        // Ajouter un observateur pour détecter les collisions avec les boules de feu
         this.scene.onBeforeRenderObservable.add(() => {
-            const personnage = this.scene.getMeshByName("personnage");
-            if (personnage && personnage.position.x > 48) {
-                console.log("Personnage a traversé la porte. Chargement de la scène 2...");
-                this.loadScene2();
-            }
+            this.checkCollisions();
         });
     }
 
-    loadScene2() {
-        // Supprimer la scène actuelle et libérer la mémoire
-        this.scene.dispose();
+    checkCollisions() {
+        // Vérifier les collisions avec les boules de feu
+        this.scene.meshes.forEach(mesh => {
+            if (mesh.name.startsWith("fireball")) {
+                if (mesh.intersectsMesh(this.enemy, false)) {
+                    this.health -= 1; // Réduire la santé de l'ennemi
+                    mesh.dispose(); // Supprimer la boule de feu
 
-        // Créer la nouvelle scène 2
-        const scene2 = new Scene2(this.engine, this.canvas);
+                    if (this.health <= 0) {
+                        this.destroy(); // Détruire l'ennemi
+                        this.showCompletionMessage();
+                        this.showTeleportationMessage();
+                        this.teleportToScene2();
+                    }
+                }
+            }
+        });
 
-        // Lancer la boucle de rendu de la scène 2
-        scene2.renderScene();
-        scene2.resizeScene();
+        // Vérifier les collisions entre le personnage et l'ennemi
+        if (this.personnage && this.personnage.mesh && this.personnage.mesh.intersectsMesh(this.enemy, false)) {
+            console.log("Collision détectée entre le personnage et l'ennemi");
+            // Ajouter ici le code pour gérer la collision entre le personnage et l'ennemi
+        }
     }
 
-    createWall(name, width, height, position, rotation) {
-        const wall = BABYLON.MeshBuilder.CreatePlane(name, { width, height }, this.scene);
-        wall.position = position;
-        wall.rotation = rotation;
-        return wall;
+    showCompletionMessage() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const message = new BABYLON.GUI.TextBlock();
+        message.text = "Salle terminée";
+        message.color = "white";
+        message.fontSize = 50;
+        message.top = "40%";
+        advancedTexture.addControl(message);
     }
 
-    moveEnemy(x, y, z) {
-        this.enemy.position.x += x;
-        this.enemy.position.y += y;
-        this.enemy.position.z += z;
+    showTeleportationMessage() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const background = new BABYLON.GUI.Rectangle();
+        background.width = "100%";
+        background.height = "100%";
+        background.background = "black";
+        advancedTexture.addControl(background);
+
+        const completionMessage = new BABYLON.GUI.TextBlock();
+        completionMessage.text = "Salle terminée";
+        completionMessage.color = "white";
+        completionMessage.fontSize = 50;
+        completionMessage.top = "-10%";
+        advancedTexture.addControl(completionMessage);
+
+        const teleportationMessage = new BABYLON.GUI.TextBlock();
+        teleportationMessage.text = "Téléportation en cours...";
+        teleportationMessage.color = "white";
+        teleportationMessage.fontSize = 50;
+        teleportationMessage.top = "10%";
+        advancedTexture.addControl(teleportationMessage);
+    }
+
+    teleportToScene2() {
+        // Vérifier si la scène actuelle est de type Scene1
+        console.log("this.scene.sceneName :", this.scene.sceneName);
+        if (this.scene.sceneName === "Scene1") {
+            setTimeout(() => {
+                console.log("Téléportation vers Scene2...");
+
+                // Créer la nouvelle scène 2 avant de supprimer la scène actuelle
+                const scene2 = new Scene2(this.scene.getEngine(), this.scene.getEngine().getRenderingCanvas());
+
+                // Supprimer la scène actuelle après avoir créé Scene2
+                this.scene.dispose();
+
+                // Lancer la boucle de rendu de la scène 2
+                scene2.renderScene();
+            }, 2000); // Délai de 2 secondes avant de téléporter le joueur
+        } else {
+            console.log("La téléportation vers Scene2 est désactivée car la scène actuelle n'est pas Scene1.");
+        }
+    }
+
+    destroy() {
+        console.log("Ennemi détruit !");
+        this.enemy.dispose(); // Supprimer l'ennemi de la scène
     }
 }
