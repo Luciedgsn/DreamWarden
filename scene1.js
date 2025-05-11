@@ -66,40 +66,6 @@ export class Scene1 extends SceneBase {
 
         // Créer un ennemi
         this.enemy = new Enemy(this.scene, this.personnage);
-    }
-
+    }    
     
-
-    async loadAndPlaceGrass() { // Placer herbe uniquement dans cette scène
-        const grassMeshes = await BABYLON.SceneLoader.ImportMeshAsync("", "asset/", "Herbe.glb", this.scene);
-        const grass = grassMeshes.meshes.find(mesh => mesh.geometry); // Trouver le mesh avec de la géométrie
-
-        if (!grass) {
-            console.error("Aucun mesh avec de la géométrie trouvé dans le modèle d'herbe.");
-            return;
-        }
-
-        // Vérifier le chargement du modèle d'herbe
-        console.log("Modèle d'herbe chargé :", grass);
-
-        // Redimensionner et positionner l'herbe
-        grass.scaling = new BABYLON.Vector3(1, 1, 1);
-        grass.position.y = 0.1; // Légèrement au-dessus du sol
-
-        // Dupliquer l'herbe de manière aléatoire sur le sol
-        const numGrassInstances = 500; // Nombre de brins d'herbe à placer
-        const groundSize = 100; // Taille du sol
-        for (let i = 0; i < numGrassInstances; i++) {
-            const x = Math.random() * groundSize - groundSize / 2;
-            const z = Math.random() * groundSize - groundSize / 2;
-            const instance = grass.createInstance(`grass_${i}`);
-            instance.position = new BABYLON.Vector3(x, 0.1, z);
-
-            // Vérifier la création des instances
-            console.log(`Instance ${i} positionnée à :`, instance.position);
-        }
-
-        // Masquer le modèle original
-        grass.isVisible = false;
-    }
 }
