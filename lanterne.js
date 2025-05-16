@@ -3,61 +3,52 @@ export class Lanterne {
         this.scene = scene;
         this.position = position;
         this.isCollected = false; // Indique si la lanterne a été collectée
-        this.dialogues = []; // Liste des dialogues de la lanterne
+        this.dialogues = [
+            "Bonjour, aventurier.",
+            "Je suis une lanterne magique.",
+            "Je peux éclairer votre chemin.",
+            "Mais vous devez me porter avec soin."
+        ]; // Liste des dialogues de la lanterne
+        this.currentDialogueIndex = 0; // Suivi du dialogue actuel
+        this.isEquipped = false; // Indique si la lanterne est équipée
 
-        // Ajoutez ceci dans SceneBase
+        // Interface utilisateur pour les dialogues
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-        // Créer la lanterne (cube bleu pour l'instant)
+        // Créer la lanterne
         this.mesh = BABYLON.MeshBuilder.CreateBox("lantern", { size: 1 }, this.scene);
         this.mesh.position = this.position;
         const lanternMaterial = new BABYLON.StandardMaterial("lanternMaterial", this.scene);
         lanternMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1); // Couleur bleue
         this.mesh.material = lanternMaterial;
 
+        // Ajouter une lumière à la lanterne
+        this.light = new BABYLON.PointLight("lanternLight", new BABYLON.Vector3(0, 0, 0), this.scene);
+        this.light.parent = this.mesh;
+        this.light.intensity = 2;
+        this.light.range = 10;
+        this.light.diffuse = new BABYLON.Color3(1, 0.9, 0.7);
+
         // Ajouter une action pour détecter les clics
         this.mesh.actionManager = new BABYLON.ActionManager(this.scene);
         this.mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
             BABYLON.ActionManager.OnPickTrigger,
-            () => this.collectLantern()
+            () => this.startDialogue()
         ));
     }
 
-    // Méthode pour collecter la lanterne
-    collectLantern() {
-        if (!this.isCollected) {
-            console.log("Lanterne collectée !");
-            this.isCollected = true;
-            this.mesh.isVisible = false; // Masquer la lanterne dans la scène
-            this.addLanternToUI(); // Ajouter l'icône de la lanterne à l'interface utilisateur
+    // Méthode pour afficher un dialogue
+    startDialogue() {
+        if (this.currentDialogueIndex < this.dialogues.length) {
+            this.speak(this.dialogues[this.currentDialogueIndex]);
+            this.currentDialogueIndex++;
+        } else {
+            this.speak("Appuyez sur F pour équiper");
         }
     }
 
-    // Méthode pour ajouter l'icône de la lanterne à l'interface utilisateur
-    addLanternToUI() {
-        // Utiliser l'interface utilisateur globale
-        const lanternIcon = new BABYLON.GUI.Image("lanternIcon", "textures/lantern.png"); // Remplacez par une image réelle plus tard
-        lanternIcon.width = "100px";
-        lanternIcon.height = "100px";
-        lanternIcon.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-        lanternIcon.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        lanternIcon.left = "10px";
-        lanternIcon.top = "-10px";
-
-        // Ajouter l'icône à l'interface utilisateur globale
-        this.scene.advancedTexture.addControl(lanternIcon);
-    }
-
-    // Méthode pour faire parler la lanterne
+    // Méthode pour afficher un texte à l'écran
     speak(text) {
-        if (!this.scene.advancedTexture) {
-            console.error("L'interface utilisateur globale (advancedTexture) n'est pas définie !");
-            return;
-        }
-
-        if (this.isSpeaking) return; // Empêche d'afficher plusieurs dialogues en même temps
-        this.isSpeaking = true;
-
         const dialogueBox = new BABYLON.GUI.TextBlock();
         dialogueBox.text = text;
         dialogueBox.color = "white";
@@ -69,13 +60,33 @@ export class Lanterne {
         dialogueBox.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         dialogueBox.top = "-150px";
 
-        // Ajouter le dialogue à l'interface utilisateur globale
-        this.scene.advancedTexture.addControl(dialogueBox);
+        // Ajouter le dialogue à l'interface utilisateur
+        this.advancedTexture.addControl(dialogueBox);
 
         // Supprimer le dialogue après 3 secondes
         setTimeout(() => {
-            this.scene.advancedTexture.removeControl(dialogueBox);
-            this.isSpeaking = false; // Permet d'afficher un nouveau dialogue
+            this.advancedTexture.removeControl(dialogueBox);
         }, 3000);
     }
+
+    // Méthode pour équiper la lanterne
+    equipLantern(personnage) {
+        if (this.isEquipped) return;
+
+        // Attacher la lanterne au personnage
+        this.mesh.parent = personnage.mesh;
+        this.mesh.position = new BABYLON.Vector3(0.5, 1, 0); // Position relative au personnage
+        this.mesh.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5); // Ajuster l'échelle si nécessaire
+
+        // Attacher la lumière de la lanterne au personnage
+        this.light.parent = this.mesh;
+
+        // Marquer la lanterne comme équipée
+        this.isEquipped = true;
+
+        // Afficher un message pour indiquer que la lanterne est équipée
+        this.speak("Vous avez équipé la lanterne !");
+    }
 }
+
+
