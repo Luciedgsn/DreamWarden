@@ -63,7 +63,7 @@ export class Personnage {
 
     enableMovement() {
         const speedWalking = 0.07; // Vitesse de marche
-        const speedRunning = 0.2; // Vitesse de sprint
+        const speedRunning = 0.16; // Vitesse de sprint
         const keysPressed = {}; // Tableau pour suivre les touches enfoncées
         let isShiftPressed = false; // Indicateur pour le sprint
 
