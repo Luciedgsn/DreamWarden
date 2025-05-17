@@ -221,16 +221,40 @@ lampionPositions.forEach((pos, index) => {
     this.lampions.push(l);
 });
 
+this.door = BABYLON.MeshBuilder.CreateBox("porte", {
+    width: 4, height: 6, depth: 0.3
+}, this.scene);
+this.door.position = new BABYLON.Vector3(0, 3, this.roomSize / 2 - 0.2); // Légèrement devant le mur
+this.door.checkCollisions = true;
+this.door.material = new BABYLON.StandardMaterial("doorMat", this.scene);
+this.door.material.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+this.doorOpened = false; // Pour éviter l'ouverture multiple
+
 });
 
 this.scene.onBeforeRenderObservable.add(() => {
     const allOn = this.lampions.every(l => l.allume);
-    if (allOn && !this.eventTriggered) {
-        this.eventTriggered = true;
-        console.log("🎉 Tous les lampions sont allumés !");
-        // ➕ Tu peux ici déclencher un événement, comme faire apparaître une porte
+    if (allOn && !this.doorOpened) {
+        this.doorOpened = true;
+        console.log("🎉 Tous les lampions sont allumés ! La porte s'ouvre...");
+
+        // Animation pour ouvrir la porte (vers le haut)
+        const animation = new BABYLON.Animation("doorOpen", "position.y", 30,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+        const keys = [
+            { frame: 0, value: this.door.position.y },
+            { frame: 30, value: this.door.position.y + 7 } // Monter de 7 unités
+        ];
+
+        animation.setKeys(keys);
+        this.door.animations = [animation];
+        this.scene.beginAnimation(this.door, 0, 30, false);
     }
 });
+
         
 
     }
