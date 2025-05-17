@@ -1,5 +1,6 @@
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
+import { lampion } from './lampion.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -108,7 +109,7 @@ export class Scene1 extends SceneBase {
             });
         });
 // 🌳 Arbre : 1 seul chargement puis instances à positions définies
-BABYLON.SceneLoader.ImportMesh("", "asset/", "arbre.glb", this.scene, (meshes) => {
+/*BABYLON.SceneLoader.ImportMesh("", "asset/", "arbre.glb", this.scene, (meshes) => {
     // Filtre les vrais meshes visibles avec géométrie
     const arbreMeshes = meshes.filter(m => m instanceof BABYLON.Mesh && m.geometry);
 
@@ -147,14 +148,14 @@ BABYLON.SceneLoader.ImportMesh("", "asset/", "arbre.glb", this.scene, (meshes) =
 
         // Pour chaque mesh réel, on fait une instance et on l’attache à notre instance
         arbreMeshes.forEach((m, j) => {
-            const inst = m.createInstance(`arbre${i}_mesh${j}`);
+            const inst = m.createInstance(arbre${i}_mesh${j});
             inst.parent = arbreInstance;
         });
     });
 
     // On cache les originaux
     arbreMeshes.forEach(m => m.setEnabled(false));
-});
+});*/
 
     // 🌿 Plantes : 1 seul chargement puis instances à positions définies
 BABYLON.SceneLoader.ImportMesh("", "asset/", "plant.glb", this.scene, (meshes) => {
@@ -205,10 +206,32 @@ BABYLON.SceneLoader.ImportMesh("", "asset/", "plant.glb", this.scene, (meshes) =
 
     // Cache les meshes originaux
     plantMeshes.forEach(m => m.setEnabled(false));
+
+    // 🏮 Lampions à viser
+this.lampions = [];
+
+const lampionPositions = [
+    new BABYLON.Vector3(-10, 0, -10),
+    new BABYLON.Vector3(10, 0, -10),
+    new BABYLON.Vector3(0, 0, 15)
+];
+
+lampionPositions.forEach((pos, index) => {
+    const l = new lampion(this.scene, this.personnage, pos);
+    this.lampions.push(l);
 });
 
+});
 
-
+this.scene.onBeforeRenderObservable.add(() => {
+    const allOn = this.lampions.every(l => l.allume);
+    if (allOn && !this.eventTriggered) {
+        this.eventTriggered = true;
+        console.log("🎉 Tous les lampions sont allumés !");
+        // ➕ Tu peux ici déclencher un événement, comme faire apparaître une porte
+    }
+});
+        
 
     }
 }
