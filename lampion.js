@@ -1,13 +1,23 @@
 export class lampion {
-    constructor(scene, personnage, position = new BABYLON.Vector3(10, 1, 0), size = 2, allume = false) {
+    constructor(scene, personnage, position = new BABYLON.Vector3(10, 1, 0), size = 2, allumee) {
         this.scene = scene;
         this.personnage = personnage;
         this.position = position;
         this.size = size;
-        this.allume = allume;
+        this.allume = false;
         this.enemy = null;
         this.hitbox = null;
         this.halo = null; // 🔶 Lumière du halo
+        this.emissiveMatOff = null; // matériel pour état éteint (bleu clair)
+        this.emissiveMatOn = null;  // matériel pour état allumé (orange)
+
+         // Préparer le matériel éteint (bleu clair)
+        this.emissiveMatOff = new BABYLON.StandardMaterial("lampionEmissiveOff", this.scene);
+        this.emissiveMatOff.emissiveColor = new BABYLON.Color3(0.5, 0.7, 1.0); // bleu clair
+
+        // Préparer le matériel allumé (orange)
+        this.emissiveMatOn = new BABYLON.StandardMaterial("lampionEmissiveOn", this.scene);
+        this.emissiveMatOn.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.0); // orange
 
         // Charger le modèle
         BABYLON.SceneLoader.ImportMesh("", "asset/", "lanterne.glb", this.scene, (meshes) => {
@@ -15,10 +25,12 @@ export class lampion {
                 this.enemy = new BABYLON.TransformNode("enemyParent", this.scene);
                 meshes.forEach(mesh => {
                     mesh.parent = this.enemy;
+                     // Appliquer le matériel bleu clair par défaut
+                    mesh.material = this.emissiveMatOff;
                 });
 
                 this.enemy.position = this.position.clone();
-                this.enemy.scaling = new BABYLON.Vector3(1, 1, 1);
+                this.enemy.scaling = new BABYLON.Vector3(2, 2, 2);
 
                 // Créer la hitbox
                 this.hitbox = BABYLON.MeshBuilder.CreateBox("enemyHitbox", {
@@ -59,29 +71,37 @@ export class lampion {
     }
 
     checkCollisions() {
-        if (!this.hitbox || this.allume) return;
+    if (!this.hitbox || this.allume) return;
 
-        this.scene.meshes.forEach(mesh => {
-            if (mesh.name.startsWith("fireball") && mesh.intersectsMesh(this.hitbox, false)) {
-                console.log("Collision détectée !");
-                this.allume = true;
-                console.log("Lampion allumé !");
-                mesh.dispose();
+    this.scene.meshes.forEach(mesh => {
+        if (mesh.name.startsWith("fireball") && mesh.intersectsMesh(this.hitbox, false)) {
+            console.log("Collision détectée !");
+            this.allumer(); // <-- appel de la méthode ici !
+            mesh.dispose();
+        }
+    });
+}
 
-                // 🔶 Allumer le halo orange
-                if (this.halo) {
-                    this.halo.intensity = 2;
-                }
+allumer() {
+    if (!this.allume) {
+        this.allume = true;
 
-                // 🔶 Ajouter une couleur émissive si tu veux aussi un effet lumineux sur le mesh
-                const emissiveMat = new BABYLON.StandardMaterial("lampionEmissive", this.scene);
-                emissiveMat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.0); // orange
-                if (this.enemy) {
-                    this.enemy.getChildMeshes().forEach(m => {
-                        m.material = emissiveMat;
-                    });
-                }
-            }
-        });
+        // Allumer le halo orange
+        if (this.halo) {
+            this.halo.intensity = 2;
+        }
+
+        // Ajouter effet lumineux sur le mesh
+        const emissiveMat = new BABYLON.StandardMaterial("lampionEmissive", this.scene);
+        emissiveMat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.0);
+        if (this.enemy) {
+            this.enemy.getChildMeshes().forEach(m => {
+                m.material = emissiveMat;
+            });
+        }
+
+        // Appeler le callback
+        if (this.onAllume) this.onAllume();
     }
+}
 }
