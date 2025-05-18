@@ -1,7 +1,7 @@
 // scene1.js
 
 import { SceneBase } from './scenebase.js';
-import { Personnage } from './personnage.js';
+import { Personnage } from './personnageSP.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
