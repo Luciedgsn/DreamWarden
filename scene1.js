@@ -526,9 +526,9 @@ export class Scene1 extends SceneBase {
         // Liste des messages à afficher
         const messages = [
             "Il fait très sombre ici, c'est étrange...",
-            "Vous sentez une présence oppressante...",
-            "Votre vision s'obscurcit...",
-            "Tout devient noir..."
+            "??? : PARTEZ ! C'EST DANGEREUX !",
+            "Hein ? HAAA ON M'ATTAQUE !",
+            "Je... dois... fuir..."
         ];
     
         // Afficher les messages un par un
@@ -601,7 +601,7 @@ export class Scene1 extends SceneBase {
                
     
                 // Afficher le message de la lanterne
-                this.showLanternMessage("Je t'avais prévenu ! Face à tant de noirceur, il est impossible de s'en sortir seul.");
+                this.showLanternMessage("Je t'avais prévenu ! Allez, viens me chercher, je vais t'aider à sortir d'ici !");
             }
         }, 50); // Intervalle de 50ms pour un fondu fluide
     }
