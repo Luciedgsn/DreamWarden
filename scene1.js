@@ -24,6 +24,7 @@ export class Scene1 extends SceneBase {
         this.light.intensity = 0.1;
 
         this.customizeScene();
+        
     }
 
     customizeScene() {
@@ -287,6 +288,16 @@ export class Scene1 extends SceneBase {
             l.onAllume = () => onLampionAllume();
             this.lampions.push(l);
         });
+
+        this.showIntroTexts([
+            "Hein ? Mais que s'est-il passé ?",
+            "Lanterne : Nous sommes dans la Lichterwald...",
+            "Lanterne : Cet endroit est lié aux anciens DreamWarden...",
+            "Lanterne : plus précisément à leurs souvenirs...",
+            "Lanterne : Retrouve leurs anciens partenaires.",
+            "Lanterne : et ravive leur flamme !",
+            "Visez et tirez une boule de feu avec la souris "
+        ]);
     }
 
     
@@ -296,5 +307,30 @@ export class Scene1 extends SceneBase {
         // Ajoute ici la logique pour changer de scène, par exemple :
         // this.engine.stopRenderLoop();
         // lancer la nouvelle scène ou changer de route etc.
+    }
+
+    showIntroTexts(lines) {
+        let currentIndex = 0;
+
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        textBlock.paddingBottom = 80;
+        this.guiTexture.addControl(textBlock);
+
+        const showNextLine = () => {
+            if (currentIndex < lines.length) {
+                textBlock.text = lines[currentIndex];
+                textBlock.isVisible = true;
+                currentIndex++;
+                setTimeout(showNextLine, 3000);
+            } else {
+                textBlock.isVisible = false;
+            }
+        };
+
+        showNextLine();
     }
 }
