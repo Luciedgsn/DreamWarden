@@ -29,6 +29,7 @@ export class Scene1 extends SceneBase {
         this.light.intensity = 0.1;
 
         this.customizeScene();
+        this.messageIntro();
     }
 
     customizeScene() {
@@ -197,16 +198,6 @@ export class Scene1 extends SceneBase {
         });
 
 
-        
-        
-
-        const lanternDialogues = [
-            "Bonjour, jeune aventurier...",
-            "Je suis enfermé dans cette cage magique.",
-            "Pour me libérer, trouve les trois objets cachés dans cette pièce.",
-            "Je t'attendrai ici. Bonne chance !"
-        ];
-
         // Gestion du dialogue avec la lanterne avant toute interaction avec les objets
         this.scene.onBeforeRenderObservable.add(() => {
             if (dialogueInProgress || repliqueLampefini) return;
@@ -215,19 +206,7 @@ export class Scene1 extends SceneBase {
             const distance = BABYLON.Vector3.Distance(this.personnage.mesh.position, lanternPosition);
         
             if (distance < 3) {
-                dialogueInProgress = true;
-        
-                if (dialogueIndex < lanternDialogues.length) {
-                    this.showLanternMessage(lanternDialogues[dialogueIndex]);
-                    dialogueIndex++;
-        
-                    setTimeout(() => {
-                        dialogueInProgress = false;
-                        if (dialogueIndex === lanternDialogues.length) {
-                            repliqueLampefini = true; // Dialogue fini, interactions débloquées
-                        }
-                    }, 3000);
-                }
+                this.messageLampe();
             }
         });
 
@@ -642,5 +621,93 @@ export class Scene1 extends SceneBase {
         }
     }
     
+
+    messageIntro() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.text = ""; // vide au départ
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.height = "100px";
+
+        // Centrer horizontalement le bloc
+        textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // Placer le bloc tout en bas de l'écran
+        textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        // Ajouter un petit espace depuis le bas
+        textBlock.paddingBottom = "20px";
+
+        // (optionnel) centrer le texte à l'intérieur du bloc
+        textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+
+        advancedTexture.addControl(textBlock);
+
+        const messages = [
+            "Bienvenue dans le monde des rêves...",
+            "Explore chaque salle pour découvrir ses secrets.",
+            "Allume les lampions pour ouvrir la voie.",
+            "Bonne chance, aventurier !"
+        ];
+
+        let index = 0;
+
+        // Affiche le premier message immédiatement
+        textBlock.text = messages[index];
+
+        // Puis les suivants toutes les 3 secondes
+        const intervalId = setInterval(() => {
+            index++;
+            if (index >= messages.length) {
+                clearInterval(intervalId); // Arrêter après le dernier message
+                textBlock.text = ""; // Ou laisse le dernier message affiché si tu préfères
+                return;
+            }
+            textBlock.text = messages[index];
+        }, 3000);
+    }
+
+    messageLampe() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.text = ""; // vide au départ
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.height = "100px";
+
+        // Centrer horizontalement le bloc
+        textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // Placer le bloc tout en bas de l'écran
+        textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        // Ajouter un petit espace depuis le bas
+        textBlock.paddingBottom = "20px";
+
+        // (optionnel) centrer le texte à l'intérieur du bloc
+        textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+
+        advancedTexture.addControl(textBlock);
+
+        const messages = [
+            "TG je teste",
+        ];
+
+        let index = 0;
+
+        // Affiche le premier message immédiatement
+        textBlock.text = messages[index];
+
+        // Puis les suivants toutes les 3 secondes
+        const intervalId = setInterval(() => {
+            index++;
+            if (index >= messages.length) {
+                clearInterval(intervalId); // Arrêter après le dernier message
+                textBlock.text = ""; // Ou laisse le dernier message affiché si tu préfères
+                return;
+            }
+            textBlock.text = messages[index];
+        }, 3000);
+    }
+
     
 }  
