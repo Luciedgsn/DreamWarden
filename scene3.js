@@ -32,6 +32,7 @@ export class Scene3 extends SceneBase {
         targetingPlane.isVisible = false; // Masque dans le debug layer aussi
  
         this.customizeScene();
+        this.showIntroText(); 
        
     }
  
@@ -358,5 +359,27 @@ export class Scene3 extends SceneBase {
         const canvas = engine.getRenderingCanvas();
         const newScene = new Scene2(engine, canvas);   // c’est tout !
     }
+    
+    showIntroText() {
+    const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    const textBlock = new BABYLON.GUI.TextBlock();
+    textBlock.text = "Lanterne : Nous y voilà... les cauchemars...\nLanterne : Utilise mon pouvoir, tue les et tu seras libre !\nLanterne : Et le monde des rêves sera sauvé !";
+    textBlock.color = "white";
+    textBlock.fontSize = 24;
+    textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    textBlock.paddingBottom = 80;
+    textBlock.paddingTop = "20px";
+
+    advancedTexture.addControl(textBlock);
+
+    // Faire disparaître le texte après quelques secondes
+    setTimeout(() => {
+        advancedTexture.removeControl(textBlock);
+    }, 5000); // 5 secondes
+}
+
+
 	
 }
