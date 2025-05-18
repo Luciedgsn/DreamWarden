@@ -1,4 +1,6 @@
 import { Scene1 } from './scene1.js';
+import { Scene2 } from './scene2.js';
+import { Scene3 } from './scene3.js';
  
 export class SceneWelcome {
     constructor(engine, canvas) {

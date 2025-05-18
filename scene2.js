@@ -22,6 +22,15 @@ export class Scene2 extends SceneBase {
  
         this.scene.clearColor = new BABYLON.Color3(0, 0, 0);
         this.light.intensity = 0.1;
+
+        // Permet de gérer les bugs de collision
+        const targetingPlane = BABYLON.MeshBuilder.CreatePlane("targetPlane", { size: 100 }, this.scene);
+        targetingPlane.rotation.x = Math.PI / 2; // Horizontal (à plat)
+        targetingPlane.position.y = 1; // À la hauteur du tir (tu peux ajuster)
+        targetingPlane.isPickable = true;
+        targetingPlane.visibility = 0; // Invisible
+        targetingPlane.isVisible = false; // Masque dans le debug layer aussi
+ 
  
         this.customizeScene();
        
@@ -274,7 +283,7 @@ export class Scene2 extends SceneBase {
         const lampionPositions = [
             new BABYLON.Vector3(-15, 0, 3),// en évidence
             new BABYLON.Vector3(15, 0, 23),// contre le mur en haut à droite
-            new BABYLON.Vector3(15, 0, -16.5)// en bas sous les arbres
+            new BABYLON.Vector3(13, 0, -16.5)// en bas sous les arbres
         ];
  
         const onLampionAllume = () => {
@@ -298,7 +307,19 @@ export class Scene2 extends SceneBase {
                 animation.setKeys(keys);
                 this.door.animations = [animation];
                 this.scene.beginAnimation(this.door, 0, 30, false);
-                this.messageOpenDoor.text = "J'ai entendu une porte s'ouvrir !";
+                setTimeout(() => {
+                this.showDoorTexts([
+                        "Lanterne : Je me sens... puissante",
+                        "Lanterne : les anciens DreamWardens nous donnent leur force.",
+                        "Lanterne : Pour que les enfants puissent de nouveau rêver",
+                        "Lanterne : nous devons aller tuer les cauchemars !",
+                        "Lanterne : Je vais t'ouvrir un passage ",
+                        "Lanterne : il te mènera dans un lieu dangereux",
+                        "Lanterne : libérons tes ancêtres de leur emprise.",
+                        "Lanterne : Sois prudent, le combat va être rude.",
+                        "Une porte s'ouvre au loin..."
+                    ]);
+                }, 2000); // 2000 ms = 2 secondes
                 this.messageOpenDoor.isVisible = true;
  
                 setTimeout(() => {
@@ -326,6 +347,7 @@ export class Scene2 extends SceneBase {
                 "Visez et tirez une boule de feu avec la souris "
             ]);
         }, 2000); // 2000 ms = 2 secondes
+
     }
  
    
@@ -338,6 +360,31 @@ export class Scene2 extends SceneBase {
     }
  
     showIntroTexts(lines) {
+        let currentIndex = 0;
+ 
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        textBlock.paddingBottom = 80;
+        this.guiTexture.addControl(textBlock);
+ 
+        const showNextLine = () => {
+            if (currentIndex < lines.length) {
+                textBlock.text = lines[currentIndex];
+                textBlock.isVisible = true;
+                currentIndex++;
+                setTimeout(showNextLine, 3000);
+            } else {
+                textBlock.isVisible = false;
+            }
+        };
+ 
+        showNextLine();
+    }
+
+    showDoorTexts(lines) {
         let currentIndex = 0;
  
         const textBlock = new BABYLON.GUI.TextBlock();

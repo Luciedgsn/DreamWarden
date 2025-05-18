@@ -1,75 +1,254 @@
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
-import { Enemy } from './enemy.js'; // Importer la classe Enemy
-
+import { Enemy } from './enemy.js';
+ 
+ 
 export class Scene3 extends SceneBase {
     constructor(engine, canvas) {
         super(engine, canvas);
         this.sceneName = "Scene3";
-        this.roomSize = 20; // Taille de la pièce
+        this.roomSize = 24;
+        this.tombeCharges = false;
+        this.herbeCharges = false;
         this.initScene();
     }
-
+ 
     async initScene() {
         super.initScene();
-
-        // Configurer la scène
-        this.scene.clearColor = new BABYLON.Color3(0.2, 0.2, 0.2); // Couleur de fond
+		this.scene.clearColor = new BABYLON.Color3(0.2, 0.2, 0.2); // Couleur de fond
         this.scene.collisionsEnabled = true;
         this.camera.checkCollisions = true;
         this.camera.applyGravity = true;
+        this.ground.checkCollisions = true;
+ 
+ 
+        this.light.intensity = 0.1;
+        // Permet de gérer les bugs de collision
+        const targetingPlane = BABYLON.MeshBuilder.CreatePlane("targetPlane", { size: 100 }, this.scene);
+        targetingPlane.rotation.x = Math.PI / 2; // Horizontal (à plat)
+        targetingPlane.position.y = 1; // À la hauteur du tir (tu peux ajuster)
+        targetingPlane.isPickable = true;
+        targetingPlane.visibility = 0; // Invisible
+        targetingPlane.isVisible = false; // Masque dans le debug layer aussi
+ 
+        this.customizeScene();
        
-
-
-        // Ajouter le sol
-        const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: this.roomSize, height: this.roomSize }, this.scene);
-        const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
-        groundMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5); // Couleur grise
-        ground.material = groundMaterial;
-        ground.checkCollisions = true;
-        ground.position.y = 0.01;
-
-        // Ajouter les murs
-        const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", this.scene);
-        wallMaterial.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7); // Couleur claire
-
-        const wallHeight = 10;
+    }
+ 
+    customizeScene() {
+        const roomSize = this.roomSize;
+        const wallHeight = 15;
         const wallThickness = 0.5;
+ 
+        // 🧹 Supprimer anciens murs et sol
+        const wallsToRemove = ["backWall", "frontWall", "leftWall", "rightWall", "collisionWall"];
+        wallsToRemove.forEach(wallName => {
+            const wall = this.scene.getMeshByName(wallName);
+            if (wall) wall.dispose();
+        });
+ 
+        if (this.ground) this.ground.dispose();
+ 
+        // Sol
+        this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: roomSize, height: roomSize }, this.scene);
+        const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
+        groundMaterial.diffuseTexture = new BABYLON.Texture("asset/solCim.png", this.scene); // A CHANGER 
+        groundMaterial.diffuseTexture.uScale = 5;
+        groundMaterial.diffuseTexture.vScale = 5;
 
-        const backWall = BABYLON.MeshBuilder.CreateBox("backWall", { width: this.roomSize, height: wallHeight, depth: wallThickness }, this.scene);
-        backWall.position = new BABYLON.Vector3(0, wallHeight / 2, this.roomSize / 2);
-        backWall.material = wallMaterial;
-        backWall.checkCollisions = true;
+        
+        this.ground.material = groundMaterial;
+        this.ground.checkCollisions = true;
+ 
+        // Murs
+        const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", this.scene);
+        wallMaterial.diffuseTexture = new BABYLON.Texture("asset/murCim.png", this.scene);
+        wallMaterial.diffuseTexture.uScale = 2;
+        wallMaterial.diffuseTexture.vScale = 2;
+ 
+        const createWall = (name, position, rotationY = 0, isTransparent = false) => {
+            const wall = BABYLON.MeshBuilder.CreateBox(name, {
+                width: roomSize,
+                height: wallHeight,
+                depth: wallThickness
+            }, this.scene);
+            wall.position = position;
+            wall.rotation.y = rotationY;
+            wall.checkCollisions = true;
+ 
+            if (isTransparent) {
+                const transparentMaterial = new BABYLON.StandardMaterial("transparentMaterial", this.scene);
+                transparentMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+                transparentMaterial.alpha = 0.05;
+                wall.material = transparentMaterial;
+            } else {
+                wall.material = wallMaterial;
+            }
+ 
+            return wall;
+        };
+ 
+        createWall("backWall", new BABYLON.Vector3(0, wallHeight / 2, roomSize / 2));
+        createWall("collisionWall", new BABYLON.Vector3(0, wallHeight / 2, roomSize / 2 - 1.5)).isVisible = false;
+        createWall("frontWall", new BABYLON.Vector3(0, wallHeight / 2, -roomSize / 2), 0, true);
+        createWall("leftWall", new BABYLON.Vector3(-roomSize / 2, wallHeight / 2, 0), Math.PI / 2);
+        createWall("rightWall", new BABYLON.Vector3(roomSize / 2, wallHeight / 2, 0), Math.PI / 2);
 
-        const leftWall = BABYLON.MeshBuilder.CreateBox("leftWall", { width: this.roomSize, height: wallHeight, depth: wallThickness }, this.scene);
-        leftWall.rotation.y = Math.PI / 2;
-        leftWall.position = new BABYLON.Vector3(-this.roomSize / 2, wallHeight / 2, 0);
-        leftWall.material = wallMaterial;
-        leftWall.checkCollisions = true;
 
-        const rightWall = BABYLON.MeshBuilder.CreateBox("rightWall", { width: this.roomSize, height: wallHeight, depth: wallThickness }, this.scene);
-        rightWall.rotation.y = Math.PI / 2;
-        rightWall.position = new BABYLON.Vector3(this.roomSize / 2, wallHeight / 2, 0);
-        rightWall.material = wallMaterial;
-        rightWall.checkCollisions = true;
-
-        // Supprimer le mur de devant (ne pas le créer)
-
-        // Ajouter le personnage
-        this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0)); // Position initiale au centre de la pièce
-
-        // Ajouter un ennemi
-        const enemyPosition1 = new BABYLON.Vector3(5, 1, 5); // Position de l'ennemi
+ 
+        this.addCustomElements();
+    }
+ 
+    addCustomElements() {
+       const roomSize = this.roomSize;
+        this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0));
+		
+		const enemyPosition1 = new BABYLON.Vector3(5, 1, 5); // Position de l'ennemi
         const enemyPosition2 = new BABYLON.Vector3(-5, 1, 5); // Position de l'ennemi
         const enemyPosition3 = new BABYLON.Vector3(7, 1, 5); // Position de l'ennemi
         const enemy1 = new Enemy(this.scene, this.personnage, enemyPosition1, 1, 3); // Taille 2, santé 3
         const enemy2 = new Enemy(this.scene, this.personnage, enemyPosition2, 1, 3); // Taille 2, santé 3
         const boss = new Enemy(this.scene, this.personnage, enemyPosition3, 3, 3); // Taille 2, santé 3
+		
+ 
+        // 🌳 Tombes (chargement une seule fois)
+        if (!this.tombeCharges) {
+            this.tombeCharges = true;
+            BABYLON.SceneLoader.ImportMesh("", "asset/", "tombe.glb", this.scene, (meshes) => {
+                console.log("✅ Fichier GLB chargé, meshes :", meshes);
+                const tombeMeshes = meshes.filter(m => m instanceof BABYLON.Mesh && m.geometry);
+                console.log("✅ Meshes filtrés (avec géométrie) :", tombeMeshes);
+                if (tombeMeshes.length === 0) return;
 
-        console.log("Scène 2 initialisée avec un ennemi.");
+                const tombeRoot = new BABYLON.TransformNode("tombeRoot", this.scene);
+                const positions = [
+                    // Rangée de gauche (x = -4)
+                    new BABYLON.Vector3(-4, 4, -10),
+                    new BABYLON.Vector3(-8, 4, -6),
+                    new BABYLON.Vector3(-4, 4, -2),
+
+                    new BABYLON.Vector3(-8, 4, 2),
+                    new BABYLON.Vector3(-4, 4, 6),
+                    new BABYLON.Vector3(-8, 4, 10),
+
+                    // Rangée de droite (x = 4)
+                    new BABYLON.Vector3(4, 4, -10),
+                    new BABYLON.Vector3(8, 4, -6),
+                    new BABYLON.Vector3(4, 4, -2),
+                    new BABYLON.Vector3(8, 4, 2),
+                    new BABYLON.Vector3(4, 4, 6),
+                    new BABYLON.Vector3(8, 4, 10),
+                ];
+
+                positions.forEach((pos, i) => {
+                    console.log(`📍 Création de la tombe ${i} à la position`, pos);
+                    const tombeInstance = new BABYLON.TransformNode("tombeInstance" + i, this.scene);
+                    tombeInstance.position = pos;
+                    tombeInstance.scaling = new BABYLON.Vector3(1, 1, 1);
+                    tombeInstance.parent = tombeRoot;
+
+                    tombeMeshes.forEach((m, j) => {
+                        const inst = m.createInstance(`tombe${i}_mesh${j}`);
+                        inst.parent = tombeInstance;
+                    });
+                });
+
+                tombeMeshes.forEach(m => m.setEnabled(false)); // Cache les originaux
+            });
+
+        }
+
+        // 🌾 Herbes mortes
+        if (!this.HerbesCharges) {
+            this.HerbesCharges = true;
+
+            BABYLON.SceneLoader.ImportMesh("", "asset/", "herbeM.glb", this.scene, (meshes) => {
+                console.log("✅ Fichier GLB herbes chargé, meshes :", meshes);
+
+                const herbeMeshes = meshes.filter(m => m instanceof BABYLON.Mesh && m.geometry);
+                console.log("✅ Meshes filtrés (herbes avec géométrie) :", herbeMeshes);
+                if (herbeMeshes.length === 0) return;
+
+                const herbeRoot = new BABYLON.TransformNode("herbeRoot", this.scene);
+
+                const positions = [
+                    new BABYLON.Vector3(-7.5, 1, -8.5),
+                    new BABYLON.Vector3(-2.5, 1, -5.3),
+                    new BABYLON.Vector3(0.8, 1, -3.9),
+                    new BABYLON.Vector3(6.6, 1, -1.1),
+                    new BABYLON.Vector3(2.9, 1, 1.7),
+                    new BABYLON.Vector3(-6.2, 1, 3.3),
+                    new BABYLON.Vector3(1.5, 1, 6.9),
+                    new BABYLON.Vector3(9, 1, -11),
+                ];
+
+                positions.forEach((pos, i) => {
+                    console.log(`📍 Création de l'herbe ${i} à la position`, pos);
+
+                    const herbeInstance = new BABYLON.TransformNode("herbeInstance" + i, this.scene);
+                    herbeInstance.position = pos;
+                    herbeInstance.scaling = new BABYLON.Vector3(1, 1, 1);
+                    herbeInstance.parent = herbeRoot;
+
+                    herbeMeshes.forEach((mesh, j) => {
+                        const inst = mesh.createInstance(`herbe${i}_mesh${j}`);
+                        inst.parent = herbeInstance;
+                    });
+                });
+
+        // Cache les originaux après duplication
+        herbeMeshes.forEach(m => m.setEnabled(false));
+    });
+}
+
+
+
+
+        // 💀 Chargement du crâne
+        BABYLON.SceneLoader.ImportMesh("", "asset/", "crane.glb", this.scene, (meshes) => {
+            console.log("🧠 Crâne chargé :", meshes);
+            const craneRoot = new BABYLON.TransformNode("craneRoot", this.scene);
+            
+            meshes.forEach((mesh, i) => {
+                mesh.parent = craneRoot;
+            });
+
+            craneRoot.position = new BABYLON.Vector3(-4.75, 1, 5.5); // Position au centre, ajustable
+            craneRoot.scaling = new BABYLON.Vector3(0.003, 0.003, 0.003);  // Ajuste si trop petit/grand
+            craneRoot.rotation = new BABYLON.Vector3(0, Math.PI * -0.85, 0); // Rotation de 180° autour de Y
+
+        });
+
+        // Chargement du pot de fleurs
+        BABYLON.SceneLoader.ImportMesh("", "asset/", "flower_pot.glb", this.scene, (meshes) => {
+            console.log("🌼 Pot de fleurs chargé :", meshes);
+            const potRoot = new BABYLON.TransformNode("potRoot", this.scene);
+            
+            meshes.forEach((mesh, i) => {
+                mesh.parent = potRoot;
+            });
+
+            potRoot.position = new BABYLON.Vector3(4.75, 1, -3.25); // Position au centre, ajustable
+            potRoot.scaling = new BABYLON.Vector3(5, 5, 5);  // Ajuste si trop petit/grand
+
+        });
+
+        //Chargement arbre mort
+        BABYLON.SceneLoader.ImportMesh("", "asset/", "arbreMort.glb", this.scene, (meshes) => {
+            console.log("🌳 Arbre mort chargé :", meshes);
+            const arbreRoot = new BABYLON.TransformNode("arbreRoot", this.scene);
+            
+            meshes.forEach((mesh, i) => {
+                mesh.parent = arbreRoot;
+            });
+
+            arbreRoot.position = new BABYLON.Vector3(-8, 1, -5); // Position au centre, ajustable
+            arbreRoot.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);  // Ajuste si trop petit/grand
+
+        });
     }
-
-    _restartScene() {
+	
+	_restartScene() {
         console.log("✝️  Le joueur est mort – redémarrage de la scène 2");
         // débrancher la boucle de rendu de la scène courante
         this.scene.dispose();
@@ -79,4 +258,6 @@ export class Scene3 extends SceneBase {
         const canvas = engine.getRenderingCanvas();
         const newScene = new Scene2(engine, canvas);   // c’est tout !
     }
+	
 }
+ 
