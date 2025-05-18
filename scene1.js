@@ -1,7 +1,7 @@
 // scene1.js
 
 import { SceneBase } from './scenebase.js';
-import { Personnage } from './personnage.js';
+import { Personnage } from './personnageSP.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -195,15 +195,11 @@ export class Scene1 extends SceneBase {
             }
         });
 
-
-        
-        
-
         const lanternDialogues = [
-            "Bonjour, jeune aventurier...",
-            "Je suis enfermé dans cette cage magique.",
-            "Pour me libérer, trouve les trois objets cachés dans cette pièce.",
-            "Je t'attendrai ici. Bonne chance !"
+            "Lanterne : Bon comme tu t'en doutes, cette cage n'est pas normale",
+            "lanterne : elle s'ouvre grâce à l'énergie des enfants",
+            "Lanterne : il faut que tu trouves des objets avec leur énergie ",
+            "Lanterne : Fouille, il doit en avoir ici...",
         ];
 
         // Gestion du dialogue avec la lanterne avant toute interaction avec les objets
@@ -488,7 +484,6 @@ export class Scene1 extends SceneBase {
         textBlock.height = "300px";
         textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        textBlock.top = "-100px";
         advancedTexture.addControl(textBlock);
 
         setTimeout(() => {

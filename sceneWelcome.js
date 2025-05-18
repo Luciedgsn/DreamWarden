@@ -181,9 +181,26 @@ export class SceneWelcome {
         advancedTexture.addControl(textBlock);
 
         const messages = [
-            "Bienvenue dans le monde des rêves...",
-            "Explore chaque salle pour découvrir ses secrets.",
-            "Bonne chance, aventurier !"
+            "??? : Hé toi !",
+            "Hein qui me parle ? Et où suis-je ?",
+            "??? : Bah moi, qui ça peut être d'autre ici ?",
+            "Excusez-moi mais je ne vous vois pas...",
+            "??? C'est censé être ça notre sauveur ? Et bah...",
+            "??? : Je suis sur la table, bloquée dans cette cage. ",
+            "Vous êtes une lanterne ? Qui me parle ???",
+            "Lanterne : Et oui mon coco, on est dans le monde des rêves, tout est possible !",
+            "Lanterne : Enfin plus pour longtemps... ",
+            "Lanterne : Les cauchemars sont de retour",
+            "Lanterne : Ils nous volent l'énergie des rêves des enfants ",
+            "Lanterne : Et sans cela, ce monde va s'éteindre...",
+            "Alors c'est horrible, mais j'ai rien à voir avec tout ça.",
+            "Lanterne : Super, il est investi notre prochain DreamWarden...",
+            "DreamWarden ??? Pardon ?",
+            "Lanterne : Surpriiise, tu es le dernier descendant de la lignée des DreamWardens !",
+            "Lanterne : Tu es le seul à pouvoir nous sauver !", 
+            "Lanterne : Mais pour ça, viens m'aider à sortir de cette cage !",
+            "Et pourquoi je ferais ça ?",
+            "Lanterne : Tu veux rentrer chez toi ? Alors viens.",
         ];
 
         let index = 0;
