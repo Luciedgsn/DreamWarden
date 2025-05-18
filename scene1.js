@@ -638,6 +638,7 @@ export class Scene1 extends SceneBase {
 
     messageIntro() {
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+      
 
         const textBlock = new BABYLON.GUI.TextBlock();
         textBlock.text = ""; // vide au départ
@@ -656,6 +657,7 @@ export class Scene1 extends SceneBase {
         textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 
         advancedTexture.addControl(textBlock);
+       
 
         const messages = [
             "Bienvenue dans le monde des rêves...",
@@ -675,6 +677,8 @@ export class Scene1 extends SceneBase {
                 clearInterval(intervalId); // Arrêter après le dernier message
                 textBlock.text = ""; // Ou laisse le dernier message affiché si tu préfères
                 return;
+               
+
             }
             textBlock.text = messages[index];
         }, 3000);

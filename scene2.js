@@ -361,6 +361,8 @@ export class Scene2 extends SceneBase {
  
     showIntroTexts(lines) {
         let currentIndex = 0;
+        if (this.personnage) this.personnage.controlsEnabled = false;
+      
  
         const textBlock = new BABYLON.GUI.TextBlock();
         textBlock.color = "white";
@@ -378,14 +380,20 @@ export class Scene2 extends SceneBase {
                 setTimeout(showNextLine, 3000);
             } else {
                 textBlock.isVisible = false;
+                if (this.personnage) this.personnage.controlsEnabled = true;
+                
             }
         };
  
         showNextLine();
+        
+
     }
 
     showDoorTexts(lines) {
         let currentIndex = 0;
+        this.personnage.controlsEnabled = false;
+      
  
         const textBlock = new BABYLON.GUI.TextBlock();
         textBlock.color = "white";
@@ -403,10 +411,13 @@ export class Scene2 extends SceneBase {
                 setTimeout(showNextLine, 3000);
             } else {
                 textBlock.isVisible = false;
+                this.personnage.controlsEnabled = true;
+                
             }
         };
  
         showNextLine();
+        
     }
 
 
