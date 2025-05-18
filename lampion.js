@@ -30,7 +30,7 @@ export class lampion {
                 });
 
                 this.enemy.position = this.position.clone();
-                this.enemy.scaling = new BABYLON.Vector3(2, 2, 2);
+                this.enemy.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
 
                 // Créer la hitbox
                 this.hitbox = BABYLON.MeshBuilder.CreateBox("enemyHitbox", {

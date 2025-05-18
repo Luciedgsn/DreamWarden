@@ -153,7 +153,7 @@ export class Scene1 extends SceneBase {
         });
 
         // 🌳 Arbres (chargement une seule fois)
-        /*if (!this.arbresCharges) {
+        if (!this.arbresCharges) {
             this.arbresCharges = true;
             BABYLON.SceneLoader.ImportMesh("", "asset/", "arbre.glb", this.scene, (meshes) => {
                 const arbreMeshes = meshes.filter(m => m instanceof BABYLON.Mesh && m.geometry);
@@ -176,7 +176,8 @@ export class Scene1 extends SceneBase {
                     new BABYLON.Vector3(-8, 0, -18),
                     new BABYLON.Vector3(-3, 0, 2),
                     new BABYLON.Vector3(8, 0, -3),
-                    new BABYLON.Vector3(0, 0, 5)
+                    new BABYLON.Vector3(0, 0, 5),
+                    new BABYLON.Vector3(12, 0, -18)
                 ];
 
                 positions.forEach((pos, i) => {
@@ -193,7 +194,7 @@ export class Scene1 extends SceneBase {
 
                 arbreMeshes.forEach(m => m.setEnabled(false));
             });
-        }*/
+        }
 
         // 🌿 Plantes
         BABYLON.SceneLoader.ImportMesh("", "asset/", "plant.glb", this.scene, (meshes) => {
@@ -252,9 +253,9 @@ export class Scene1 extends SceneBase {
         this.lampions = [];
         this.nbLampionsAllumes = 0;
         const lampionPositions = [
-            new BABYLON.Vector3(-10, 0, -10),
-            new BABYLON.Vector3(10, 0, -10),
-            new BABYLON.Vector3(0, 0, 15)
+            new BABYLON.Vector3(-15, 0, 3),// en évidence
+            new BABYLON.Vector3(15, 0, 23),// contre le mur en haut à droite
+            new BABYLON.Vector3(9, 0, -16.5)// en bas sous les arbres
         ];
 
         const onLampionAllume = () => {
