@@ -484,7 +484,6 @@ export class Scene1 extends SceneBase {
         textBlock.height = "300px";
         textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        textBlock.top = "-100px";
         advancedTexture.addControl(textBlock);
 
         setTimeout(() => {
