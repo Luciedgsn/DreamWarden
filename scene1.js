@@ -108,6 +108,18 @@ export class Scene1 extends SceneBase {
 
         this.guiTexture.addControl(this.messageDoor);
 
+        // Nouveau message à l'ouverture de la porte
+        this.messageOpenDoor = new BABYLON.GUI.TextBlock();
+        this.messageOpenDoor.text = "";
+        this.messageOpenDoor.color = "white";
+        this.messageOpenDoor.fontSize = 24;
+        this.messageOpenDoor.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        this.messageOpenDoor.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        this.messageOpenDoor.isVisible = false;
+
+        this.guiTexture.addControl(this.messageOpenDoor);
+
+
 
         this.scene.onBeforeRenderObservable.add(() => {
             if (!this.personnage || !this.door) return;
@@ -280,6 +292,12 @@ export class Scene1 extends SceneBase {
                 animation.setKeys(keys);
                 this.door.animations = [animation];
                 this.scene.beginAnimation(this.door, 0, 30, false);
+                this.messageOpenDoor.text = "J'ai entendu une porte s'ouvrir !";
+                this.messageOpenDoor.isVisible = true;
+
+                setTimeout(() => {
+                    this.messageOpenDoor.isVisible = false;
+                }, 4000); // affiché pendant 4 secondes
             }
         };
 
@@ -293,10 +311,12 @@ export class Scene1 extends SceneBase {
             this.showIntroTexts([
                 "Hein ? Mais que s'est-il passé ?",
                 "Lanterne : Nous sommes dans la Lichterwald...",
-                "Lanterne : Cet endroit est lié aux anciens DreamWarden...",
+                "Lanterne : Cet endroit est lié aux anciens DreamWardens",
                 "Lanterne : plus précisément à leurs souvenirs...",
-                "Lanterne : Retrouve leurs anciens partenaires.",
-                "Lanterne : Et ravive leur flamme !",
+                "Lanterne : Retrouve leurs partenaires.",
+                "Lanterne : Et ravive leurs flammes !",
+                "Lanterne : Il devrait en avoir 3 dans ces bois.",
+                "Lanterne : Je te prête mon pouvoir, sois prudent.",
                 "Visez et tirez une boule de feu avec la souris "
             ]);
         }, 2000); // 2000 ms = 2 secondes
