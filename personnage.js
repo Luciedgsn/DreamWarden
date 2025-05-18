@@ -11,6 +11,7 @@ export class Personnage {
         this.spellCooldown = 700;
         this.health = 100;
         this.isDead = false;
+        
 
         BABYLON.SceneLoader.ImportMesh("", "asset/", "AnimPerso2.glb", this.scene, (meshes, _, __, animationGroups) => {
             if (meshes.length > 0) {
@@ -51,6 +52,8 @@ export class Personnage {
         const speedRunning = 0.16;
         const keysPressed = {};
         let isShiftPressed = false;
+
+        
 
         window.addEventListener("keydown", (event) => {
             keysPressed[event.key] = true;
