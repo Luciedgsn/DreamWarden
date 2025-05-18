@@ -1,5 +1,3 @@
-// scene1.js
-
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
 import { Scene2 } from './scene2.js'; // Assurez-vous que Scene2 est correctement importé
@@ -22,105 +20,138 @@ export class Enemy {
         this.personnage = personnage; // Référence au personnage
         this.position = position;
         this.size = size;
-        this.health = health; // Nombre de coups nécessaires pour tuer l'ennemi
+        this.health = health;
+        this.enemy = null;
+        this.hitbox = null;
 
-        // Créer un cube rouge pour représenter l'ennemi
-        this.enemy = BABYLON.MeshBuilder.CreateBox("enemy", { size: this.size }, this.scene);
-        this.enemy.position = this.position;
-        const enemyMaterial = new BABYLON.StandardMaterial("enemyMaterial", this.scene);
-        enemyMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Couleur rouge
-        this.enemy.material = enemyMaterial;
+        // Charger le modèle cauchemar.glb
+        BABYLON.SceneLoader.ImportMesh("", "asset/", "cauchemar.glb", this.scene, (meshes) => {
+            if (meshes.length > 0) {
+                // Créer un TransformNode parent
+                this.enemy = new BABYLON.TransformNode("enemyParent", this.scene);
 
-        // Activer les collisions pour l'ennemi
-        this.enemy.checkCollisions = true;
+                // Attacher les meshes du modèle au parent
+                meshes.forEach(mesh => {
+                    mesh.parent = this.enemy;
+                });
 
-        // Ajouter un observateur pour détecter les collisions avec les boules de feu
+                // Position initiale et échelle
+                this.enemy.position = this.position.clone();
+                this.enemy.scaling = new BABYLON.Vector3(1, 1, 1);
+
+                // Créer une hitbox invisible
+                this.hitbox = BABYLON.MeshBuilder.CreateBox("enemyHitbox", {
+                    width: 1.5, height: 2.5, depth: 1.5 // Dimensions ajustées
+                }, this.scene);
+                this.hitbox.parent = this.enemy;
+                this.hitbox.position = new BABYLON.Vector3(0, 1.5, 0); // locale
+                this.hitbox.isVisible = false; // TEMPORAIRE : Rendre visible pour déboguer
+                this.hitbox.checkCollisions = false; // Désactiver les collisions physiques
+
+                console.log("Modèle cauchemar chargé et hitbox attachée.");
+            } else {
+                console.error("Erreur : Aucun mesh trouvé dans cauchemar.glb.");
+            }
+        });
+
+        // Boucle de mise à jour
         this.scene.onBeforeRenderObservable.add(() => {
-            this.checkCollisions();
+            this.update();
         });
     }
 
+    update() {
+        if (!this.enemy || this.health <= 0) return; // Ne rien faire si l'ennemi est supprimé ou mort
+
+        this.checkCollisions();
+        this.moveTowardPlayer();
+
+        // Vérifier si l'ennemi est proche du personnage
+        if (this.personnage && this.personnage.mesh && this.hitbox && this.hitbox.intersectsMesh(this.personnage.mesh, false)) {
+            console.log("L'ennemi est proche du personnage !");
+            // Ajoutez ici la logique pour gérer l'interaction (par exemple, réduire la santé du personnage)
+        }
+    }
+
     checkCollisions() {
-        // Vérifier les collisions avec les boules de feu
+        if (!this.hitbox) return; // Ne rien faire si la hitbox est supprimée
+
         this.scene.meshes.forEach(mesh => {
             if (mesh.name.startsWith("fireball")) {
-                if (mesh.intersectsMesh(this.enemy, false)) {
-                    this.health -= 1; // Réduire la santé de l'ennemi
-                    mesh.dispose(); // Supprimer la boule de feu
+                if (mesh.intersectsMesh(this.hitbox, false)) {
+                    console.log("Collision détectée !");
+                    this.health -= 1;
+                    console.log(`Ennemi touché ! Santé restante : ${this.health}`);
+                    mesh.dispose();
 
                     if (this.health <= 0) {
-                        this.destroy(); // Détruire l'ennemi
-                        this.showCompletionMessage();
-                        this.showTeleportationMessage();
-                        this.teleportToScene2();
+                        this.destroy();
                     }
                 }
             }
         });
-
-        // Vérifier les collisions entre le personnage et l'ennemi
-        if (this.personnage && this.personnage.mesh && this.personnage.mesh.intersectsMesh(this.enemy, false)) {
-            console.log("Collision détectée entre le personnage et l'ennemi");
-            // Ajouter ici le code pour gérer la collision entre le personnage et l'ennemi
-        }
     }
 
-    showCompletionMessage() {
-        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        const message = new BABYLON.GUI.TextBlock();
-        message.text = "Salle terminée";
-        message.color = "white";
-        message.fontSize = 50;
-        message.top = "40%";
-        advancedTexture.addControl(message);
-    }
+    moveTowardPlayer() {
+        if (!this.enemy || !this.personnage || this.health <= 0) return;
 
-    showTeleportationMessage() {
-        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        const background = new BABYLON.GUI.Rectangle();
-        background.width = "100%";
-        background.height = "100%";
-        background.background = "black";
-        advancedTexture.addControl(background);
+        const target = this.personnage.mesh?.position;
+        if (!target) return;
 
-        const completionMessage = new BABYLON.GUI.TextBlock();
-        completionMessage.text = "Salle terminée";
-        completionMessage.color = "white";
-        completionMessage.fontSize = 50;
-        completionMessage.top = "-10%";
-        advancedTexture.addControl(completionMessage);
+        const direction = target.subtract(this.enemy.position);
+        const distance = direction.length(); // Calculer la distance entre l'ennemi et le personnage
 
-        const teleportationMessage = new BABYLON.GUI.TextBlock();
-        teleportationMessage.text = "Téléportation en cours...";
-        teleportationMessage.color = "white";
-        teleportationMessage.fontSize = 50;
-        teleportationMessage.top = "10%";
-        advancedTexture.addControl(teleportationMessage);
-    }
-
-    teleportToScene2() {
-        // Vérifier si la scène actuelle est de type Scene1
-        console.log("this.scene.sceneName :", this.scene.sceneName);
-        if (this.scene.sceneName === "Scene1") {
-            setTimeout(() => {
-                console.log("Téléportation vers Scene2...");
-
-                // Créer la nouvelle scène 2 avant de supprimer la scène actuelle
-                const scene2 = new Scene2(this.scene.getEngine(), this.scene.getEngine().getRenderingCanvas());
-
-                // Supprimer la scène actuelle après avoir créé Scene2
-                this.scene.dispose();
-
-                // Lancer la boucle de rendu de la scène 2
-                scene2.renderScene();
-            }, 2000); // Délai de 2 secondes avant de téléporter le joueur
+        const minDistance = 2; // Distance minimale entre l'ennemi et le personnage
+        if (distance > minDistance) {
+            direction.normalize();
+            const speed = 0.02; // Vitesse de déplacement de l'ennemi
+            this.enemy.position.addInPlace(direction.scale(speed));
         } else {
-            console.log("La téléportation vers Scene2 est désactivée car la scène actuelle n'est pas Scene1.");
+            console.log("L'ennemi est trop proche du personnage, il s'arrête.");
         }
     }
 
     destroy() {
         console.log("Ennemi détruit !");
-        this.enemy.dispose(); // Supprimer l'ennemi de la scène
+        if (this.enemy) {
+            this.enemy.dispose();
+            this.enemy = null;
+        }
+        if (this.hitbox) {
+            this.hitbox.dispose();
+            this.hitbox = null;
+        }
+    
+        // Supprimer les observables associés
+        this.scene.onBeforeRenderObservable.removeCallback(this.update);
+    
+      
     }
+
+    update() {
+        if (!this.enemy || this.health <= 0) return; // Ne rien faire si l'ennemi est supprimé ou mort
+    
+        this.checkCollisions();
+        this.moveTowardPlayer();
+    
+        // Vérifier si l'ennemi est proche du personnage
+        if (this.personnage && this.personnage.mesh && this.hitbox && this.hitbox.intersectsMesh(this.personnage.mesh, false)) {
+            console.log("L'ennemi est proche du personnage !");
+            this.attackPlayer(); // Démarrer l'attaque
+        }
+    
+    }
+    
+    attackPlayer() {
+        if (!this.personnage || this.personnage.isDead) return;
+    
+        const damage = 10; // Dégâts infligés par l'ennemi
+        console.log(`L'ennemi inflige ${damage} dégâts au joueur.`);
+        this.personnage.takeDamage(damage);
+    }
+
+
+    
+  
+    
 }
