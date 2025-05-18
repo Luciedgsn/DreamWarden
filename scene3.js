@@ -14,9 +14,7 @@ export class Scene3 extends SceneBase {
     }
  
     async initScene() {
-        this.showLoadingScreen();
-        await this.loadAllAssets(); // Tu vas créer cette fonction ci-dessous
-        this.hideLoadingScreen();   
+           
         super.initScene();
 		this.scene.clearColor = new BABYLON.Color3(0.2, 0.2, 0.2); // Couleur de fond
         this.scene.collisionsEnabled = true;
@@ -328,7 +326,7 @@ export class Scene3 extends SceneBase {
 
         // Créer un bloc de texte pour les crédits
         const creditsText = new BABYLON.GUI.TextBlock();
-        creditsText.text = "Vous avez sauvé le monde des rêves !\n\n\n\nMerci d'avoir joué à notre jeu !\n\n\n\n\n\n Lucie DEGUISNE et Mathis PILON \nL3 MIAGE Université de TOULOUSE \n\n\n\nÀ bientôt pour de nouvelles aventures !";
+        creditsText.text = "Vous avez sauvé le monde des rêves !\n\n\n\nMerci d'avoir joué à notre jeu !\n\n\n Lucie DEGUISNE et Mathis PILON \nL3 MIAGE Université de TOULOUSE \n\n\n\nÀ bientôt pour de nouvelles aventures !";
         creditsText.color = "white";
         creditsText.fontSize = 35;
         creditsText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -383,109 +381,7 @@ export class Scene3 extends SceneBase {
     }, 5000); // 5 secondes
 }
 
-showLoadingScreen() {
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = 'loadingScreen';
 
-    const container = document.createElement('div');
-    container.style.textAlign = 'center';
-
-    const loadingImage = document.createElement('img');
-    loadingImage.src = 'asset/chargement.png'; // <-- Remplace par le chemin réel de ton image
-    loadingImage.alt = 'Chargement...';
-    loadingImage.style.width = '100%'; 
-    loadingImage.style.height = '100%';
-
-    const loadingText = document.createElement('p');
-    loadingText.innerText = 'Téléportation en cours, prépare-toi au combat !';
-    Object.assign(loadingText.style, {
-        color: 'white',
-        fontSize: '1.5em',
-        marginTop: '20px'
-    });
-
-    container.appendChild(loadingImage);
-    container.appendChild(loadingText);
-
-    Object.assign(loadingDiv.style, {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'black',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: '1000'
-    });
-
-    loadingDiv.appendChild(container);
-    document.body.appendChild(loadingDiv);
-}
-
-hideLoadingScreen() {
-    const loadingDiv = document.getElementById('loadingScreen');
-    if (loadingDiv) {
-        loadingDiv.remove();
-    }
-}
-
-async loadAllAssets() {
-    const loadMesh = (file, name, pos, scale, rot) => {
-        return new Promise((resolve, reject) => {
-            BABYLON.SceneLoader.ImportMesh("", "asset/", file, this.scene, (meshes) => {
-                const root = new BABYLON.TransformNode(name + "Root", this.scene);
-                meshes.forEach(mesh => mesh.parent = root);
-                if (pos) root.position = pos;
-                if (scale) root.scaling = scale;
-                if (rot) root.rotation = rot;
-                resolve(root);
-            }, null, (scene, message) => reject(message));
-        });
-    };
-
-    // Liste de toutes les promesses
-    const tasks = [
-        loadMesh("tombe.glb", "tombe", null, null, null),
-        loadMesh("herbeM.glb", "herbe", null, null, null),
-        loadMesh("crane.glb", "crane", new BABYLON.Vector3(-4.75, 1, 5.5), new BABYLON.Vector3(0.003, 0.003, 0.003), new BABYLON.Vector3(0, Math.PI * -0.85, 0)),
-        loadMesh("flower_pot.glb", "pot", new BABYLON.Vector3(4.75, 1, -3.25), new BABYLON.Vector3(5, 5, 5)),
-        loadMesh("arbreMort.glb", "arbre", new BABYLON.Vector3(-8, 1, -5), new BABYLON.Vector3(0.5, 0.5, 0.5)),
-        this.loadLampMesh()
-    ];
-
-    await Promise.all(tasks);
-
-    // Une fois tous les éléments chargés :
-    this.addEnemies();
-    this.showIntroText();
-}
-
-loadLampMesh() {
-    return new Promise((resolve, reject) => {
-        BABYLON.SceneLoader.ImportMesh("", "asset/", "lanterne.glb", this.scene, (meshes) => {
-            const lantern = meshes[0];
-            lantern.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
-            const light = new BABYLON.PointLight("lanternLight", new BABYLON.Vector3(0, 0, 0), this.scene);
-            light.intensity = 2;
-            light.range = 10;
-            light.diffuse = new BABYLON.Color3(1, 0.9, 0.7);
-            const mat = lantern.material || new BABYLON.StandardMaterial("lanternMaterial", this.scene);
-            mat.emissiveColor = new BABYLON.Color3(1, 1, 0.8);
-            lantern.material = mat;
-
-            this.scene.onBeforeRenderObservable.add(() => {
-                if (this.personnage.mesh && lantern) {
-                    lantern.position.copyFrom(this.personnage.mesh.position.add(new BABYLON.Vector3(0.5, 1, 0)));
-                    light.position.copyFrom(lantern.position);
-                }
-            });
-
-            resolve();
-        }, null, (scene, message) => reject(message));
-    });
-}
 
 
 	
