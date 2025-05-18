@@ -307,7 +307,19 @@ export class Scene2 extends SceneBase {
                 animation.setKeys(keys);
                 this.door.animations = [animation];
                 this.scene.beginAnimation(this.door, 0, 30, false);
-                this.messageOpenDoor.text = "J'ai entendu une porte s'ouvrir !";
+                setTimeout(() => {
+                this.showDoorTexts([
+                        "Lanterne : Je me sens... puissante",
+                        "Lanterne : les anciens DreamWardens nous donnent leur force.",
+                        "Lanterne : Pour que les enfants puissent de nouveau rêver",
+                        "Lanterne : nous devons aller tuer les cauchemars !",
+                        "Lanterne : Je vais t'ouvrir un passage ",
+                        "Lanterne : il te mènera dans un lieu dangereux",
+                        "Lanterne : libérons tes ancêtres de leur emprise.",
+                        "Lanterne : Sois prudent, le combat va être rude.",
+                        "Une porte s'ouvre au loin..."
+                    ]);
+                }, 2000); // 2000 ms = 2 secondes
                 this.messageOpenDoor.isVisible = true;
  
                 setTimeout(() => {
@@ -335,6 +347,7 @@ export class Scene2 extends SceneBase {
                 "Visez et tirez une boule de feu avec la souris "
             ]);
         }, 2000); // 2000 ms = 2 secondes
+
     }
  
    
@@ -347,6 +360,31 @@ export class Scene2 extends SceneBase {
     }
  
     showIntroTexts(lines) {
+        let currentIndex = 0;
+ 
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        textBlock.paddingBottom = 80;
+        this.guiTexture.addControl(textBlock);
+ 
+        const showNextLine = () => {
+            if (currentIndex < lines.length) {
+                textBlock.text = lines[currentIndex];
+                textBlock.isVisible = true;
+                currentIndex++;
+                setTimeout(showNextLine, 3000);
+            } else {
+                textBlock.isVisible = false;
+            }
+        };
+ 
+        showNextLine();
+    }
+
+    showDoorTexts(lines) {
         let currentIndex = 0;
  
         const textBlock = new BABYLON.GUI.TextBlock();
