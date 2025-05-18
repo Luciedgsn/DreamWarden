@@ -283,7 +283,7 @@ export class Scene2 extends SceneBase {
         const lampionPositions = [
             new BABYLON.Vector3(-15, 0, 3),// en évidence
             new BABYLON.Vector3(15, 0, 23),// contre le mur en haut à droite
-            new BABYLON.Vector3(15, 0, -16.5)// en bas sous les arbres
+            new BABYLON.Vector3(13, 0, -16.5)// en bas sous les arbres
         ];
  
         const onLampionAllume = () => {
