@@ -46,7 +46,7 @@ export class Scene1 extends SceneBase {
     
         this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: roomSize, height: roomSize }, this.scene);
         const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
-        groundMaterial.diffuseTexture = new BABYLON.Texture("asset/sol.jpg", this.scene);
+        groundMaterial.diffuseTexture = new BABYLON.Texture("asset/solEnf.png", this.scene);
         groundMaterial.diffuseTexture.uScale = 5;
         groundMaterial.diffuseTexture.vScale = 5;
         this.ground.material = groundMaterial;
@@ -111,7 +111,7 @@ export class Scene1 extends SceneBase {
         
         BABYLON.SceneLoader.ImportMesh("", "asset/", "bureau.glb", this.scene, (meshes) => {
             const bureau = meshes[0];
-            bureau.position = new BABYLON.Vector3(-4.9,0,3.3);
+            bureau.position = new BABYLON.Vector3(-4.9,-1,3.3);
             bureau.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
             bureau.position.y = 1.2;
         });
