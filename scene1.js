@@ -195,15 +195,11 @@ export class Scene1 extends SceneBase {
             }
         });
 
-
-        
-        
-
         const lanternDialogues = [
-            "Bonjour, jeune aventurier...",
-            "Je suis enfermé dans cette cage magique.",
-            "Pour me libérer, trouve les trois objets cachés dans cette pièce.",
-            "Je t'attendrai ici. Bonne chance !"
+            "Lanterne : Bon comme tu t'en doutes, cette cage n'est pas normale",
+            "lanterne : elle s'ouvre grâce à l'énergie des enfants",
+            "Lanterne : il faut que tu trouves des objets avec leur énergie ",
+            "Lanterne : Fouille, il doit en avoir ici...",
         ];
 
         // Gestion du dialogue avec la lanterne avant toute interaction avec les objets
