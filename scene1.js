@@ -289,15 +289,17 @@ export class Scene1 extends SceneBase {
             this.lampions.push(l);
         });
 
-        this.showIntroTexts([
-            "Hein ? Mais que s'est-il passé ?",
-            "Lanterne : Nous sommes dans la Lichterwald...",
-            "Lanterne : Cet endroit est lié aux anciens DreamWarden...",
-            "Lanterne : plus précisément à leurs souvenirs...",
-            "Lanterne : Retrouve leurs anciens partenaires.",
-            "Lanterne : et ravive leur flamme !",
-            "Visez et tirez une boule de feu avec la souris "
-        ]);
+        setTimeout(() => {
+            this.showIntroTexts([
+                "Hein ? Mais que s'est-il passé ?",
+                "Lanterne : Nous sommes dans la Lichterwald...",
+                "Lanterne : Cet endroit est lié aux anciens DreamWarden...",
+                "Lanterne : plus précisément à leurs souvenirs...",
+                "Lanterne : Retrouve leurs anciens partenaires.",
+                "Lanterne : Et ravive leur flamme !",
+                "Visez et tirez une boule de feu avec la souris "
+            ]);
+        }, 2000); // 2000 ms = 2 secondes
     }
 
     
