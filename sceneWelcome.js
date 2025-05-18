@@ -1,4 +1,6 @@
 import { Scene1 } from './scene1.js';
+import { Scene2 } from './scene2.js';
+import { Scene3 } from './scene3.js';
  
 export class SceneWelcome {
     constructor(engine, canvas) {
@@ -80,7 +82,7 @@ export class SceneWelcome {
  
     async loadGameScene() {
         // Charger la scène de jeu
-        this.gameScene = new Scene1(this.engine, this.canvas);
+        this.gameScene = new Scene2(this.engine, this.canvas);
         await this.gameScene.initScene();
  
         // Activer le bouton "Jouer" une fois le chargement terminé

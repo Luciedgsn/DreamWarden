@@ -23,6 +23,13 @@ export class Scene3 extends SceneBase {
  
  
         this.light.intensity = 0.1;
+        // Permet de gérer les bugs de collision
+        const targetingPlane = BABYLON.MeshBuilder.CreatePlane("targetPlane", { size: 100 }, this.scene);
+        targetingPlane.rotation.x = Math.PI / 2; // Horizontal (à plat)
+        targetingPlane.position.y = 1; // À la hauteur du tir (tu peux ajuster)
+        targetingPlane.isPickable = true;
+        targetingPlane.visibility = 0; // Invisible
+        targetingPlane.isVisible = false; // Masque dans le debug layer aussi
  
         this.customizeScene();
        
