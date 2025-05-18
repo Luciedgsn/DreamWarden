@@ -2,7 +2,6 @@
 
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
-import { Enemy } from './enemy.js';
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -29,7 +28,6 @@ export class Scene1 extends SceneBase {
         this.light.intensity = 0.1;
 
         this.customizeScene();
-        this.messageIntro();
     }
 
     customizeScene() {

@@ -150,6 +150,7 @@ export class SceneWelcome {
         // Passer à la scène de jeu
         this.engine.stopRenderLoop();
         this.gameScene.renderScene();
+        this.messageIntro();
     }
  
     renderScene() {
@@ -157,4 +158,49 @@ export class SceneWelcome {
             this.scene.render();
         });
     }
+
+    messageIntro() {
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        const textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.text = ""; // vide au départ
+        textBlock.color = "white";
+        textBlock.fontSize = 24;
+        textBlock.height = "100px";
+
+        // Centrer horizontalement le bloc
+        textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        // Placer le bloc tout en bas de l'écran
+        textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+        // Ajouter un petit espace depuis le bas
+        textBlock.paddingBottom = "20px";
+
+        // (optionnel) centrer le texte à l'intérieur du bloc
+        textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+
+        advancedTexture.addControl(textBlock);
+
+        const messages = [
+            "Bienvenue dans le monde des rêves...",
+            "Explore chaque salle pour découvrir ses secrets.",
+            "Bonne chance, aventurier !"
+        ];
+
+        let index = 0;
+
+        // Affiche le premier message immédiatement
+        textBlock.text = messages[index];
+
+        // Puis les suivants toutes les 3 secondes
+        const intervalId = setInterval(() => {
+            index++;
+            if (index >= messages.length) {
+                clearInterval(intervalId); // Arrêter après le dernier message
+                textBlock.text = ""; // Ou laisse le dernier message affiché si tu préfères
+                return;
+            }
+            textBlock.text = messages[index];
+        }, 3000);
+    }
+    
 }
