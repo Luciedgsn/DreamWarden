@@ -54,7 +54,7 @@ export class Scene1 extends SceneBase {
     
       
         const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", this.scene);
-        wallMaterial.diffuseTexture = new BABYLON.Texture("asset/pierre.jpg", this.scene);
+        wallMaterial.diffuseTexture = new BABYLON.Texture("asset/murEnf.png", this.scene);
         wallMaterial.diffuseTexture.uScale = 2;
         wallMaterial.diffuseTexture.vScale = 2;
     
