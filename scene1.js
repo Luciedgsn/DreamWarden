@@ -667,7 +667,6 @@ export class Scene1 extends SceneBase {
         const messages = [
             "Bienvenue dans le monde des rêves...",
             "Explore chaque salle pour découvrir ses secrets.",
-            "Allume les lampions pour ouvrir la voie.",
             "Bonne chance, aventurier !"
         ];
 
