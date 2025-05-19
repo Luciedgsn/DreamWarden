@@ -134,7 +134,7 @@ export class Scene1 extends SceneBase {
             if (!murOuvert && nbObjetsRamasses === 3 && !rightWallHasOpening) {
                 console.log("Création porte déclenchée !");
                 
-                // Message 3D visible
+                
                 if (!this.advancedTexture) {
                     this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
                 }
@@ -156,7 +156,7 @@ export class Scene1 extends SceneBase {
                     this.advancedTexture.removeControl(textBlock);
                 }, 5000);
         
-                // Création ouverture
+                
                 this.opening = BABYLON.MeshBuilder.CreateBox("opening", {
                     width: 2,
                     height: 3,
@@ -164,7 +164,7 @@ export class Scene1 extends SceneBase {
                 }, this.scene);
         
                 this.opening.position.x = 4;
-                this.opening.position.y = 1.5; // Hauteur / 2
+                this.opening.position.y = 1.5; 
                 this.opening.position.z = 5.7;
         
                 const mat = new BABYLON.StandardMaterial("openingMat", this.scene);
@@ -173,7 +173,7 @@ export class Scene1 extends SceneBase {
                 mat.emissiveColor = new BABYLON.Color3(0, 0, 0);
                 this.opening.material = mat;
         
-                // Lumière sur l'ouverture
+                
                 const light = new BABYLON.PointLight("openingLight", new BABYLON.Vector3(this.opening.position.x, this.opening.position.y + 1, this.opening.position.z), this.scene);
                 light.diffuse = new BABYLON.Color3(1, 0.8, 0.4);
                 light.intensity = 1.5;
@@ -183,15 +183,14 @@ export class Scene1 extends SceneBase {
             }
         });
 
-        // Détection de la proximité avec l'ouverture
-        this.scene.onBeforeRenderObservable.add(() => {
-            if (!murOuvert || this.cinematicFinished) return; // Vérifie si l'ouverture a été créée et si la cinématique est déjà terminée
         
-            const openingPosition = new BABYLON.Vector3(4, 0, 5.7); // Position de l'ouverture
+        this.scene.onBeforeRenderObservable.add(() => {
+            if (!murOuvert || this.cinematicFinished) return; 
+            const openingPosition = new BABYLON.Vector3(4, 0, 5.7); 
             const distanceToOpening = BABYLON.Vector3.Distance(this.personnage.mesh.position, openingPosition);
         
-            if (distanceToOpening < 2.5 && !this.isInCutscene) { // Vérifie si la cinématique n'est pas déjà en cours
-                this.triggerDeathScreen(); // Afficher l'écran noir et bloquer le jeu
+            if (distanceToOpening < 2.5 && !this.isInCutscene) { 
+                this.triggerDeathScreen(); 
             }
         });
 
@@ -202,11 +201,11 @@ export class Scene1 extends SceneBase {
             "Lanterne : Fouille, il doit en avoir ici...",
         ];
 
-        // Gestion du dialogue avec la lanterne avant toute interaction avec les objets
+        
         this.scene.onBeforeRenderObservable.add(() => {
             if (dialogueInProgress || repliqueLampefini) return;
         
-            const lanternPosition = /* position de la lanterne, par ex. */ new BABYLON.Vector3(-roomSize / 2 + 1, 2.37, roomSize / 2 - 2);
+            const lanternPosition = new BABYLON.Vector3(-roomSize / 2 + 1, 2.37, roomSize / 2 - 2);
             const distance = BABYLON.Vector3.Distance(this.personnage.mesh.position, lanternPosition);
         
             if (distance < 3) {
@@ -219,7 +218,7 @@ export class Scene1 extends SceneBase {
                     setTimeout(() => {
                         dialogueInProgress = false;
                         if (dialogueIndex === lanternDialogues.length) {
-                            repliqueLampefini = true; // Dialogue fini, interactions débloquées
+                            repliqueLampefini = true; 
                         }
                     }, 3000);
                 }
@@ -275,7 +274,7 @@ export class Scene1 extends SceneBase {
                 lit.rotation.y = Math.PI / 2;
                 lit.checkCollisions = true;
             
-                // Pyjama (invisible au début)
+              
                 BABYLON.SceneLoader.ImportMesh("", "asset/", "pyjama.glb", this.scene, (meshes) => {
                     const pyjama = meshes[0];
                     pyjama.name = "pyjama";
@@ -303,7 +302,7 @@ export class Scene1 extends SceneBase {
                             });
                         }
             
-                        // Ramasser le pyjama
+                       
                         if (litFouille && !pyjamaRamasse) {
                             const distanceToPyjama = BABYLON.Vector3.Distance(this.personnage.mesh.position, pyjama.position);
             
@@ -333,7 +332,7 @@ export class Scene1 extends SceneBase {
             doudou = meshes[0];
             doudou.name = "doudou";
             doudou.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-            doudou.position = new BABYLON.Vector3(3, 0.5, -3); // Place-le où tu veux dans la pièce
+            doudou.position = new BABYLON.Vector3(3, 0.5, -3); 
             doudou.checkCollisions = true;
             doudou.isVisible = true;
 
@@ -360,7 +359,7 @@ export class Scene1 extends SceneBase {
         });
 
 
-        // Variables pour gérer armoire et train
+        
         let armoire, train;
         let trainVisible = false;
         let armoireDeplacee = false;
@@ -389,7 +388,7 @@ export class Scene1 extends SceneBase {
             });
         });
     
-        // Message UI générique pour interaction
+        
         const showMessage = (msg) => {
             if (this.messageDisplayed) return;
             this.messageDisplayed = true;
@@ -411,7 +410,7 @@ export class Scene1 extends SceneBase {
             }, 2000);
         };
     
-        // Détection de proximité et interaction clavier
+        
         this.scene.onBeforeRenderObservable.add(() => {
             if (!armoire) return;
             const distArmoire = BABYLON.Vector3.Distance(this.personnage.mesh.position, armoire.position);
@@ -453,21 +452,21 @@ export class Scene1 extends SceneBase {
     
 
     equipLantern(lantern, lanternLight) {
-        // Attacher la lanterne au personnage
+        
         lantern.parent = this.personnage.mesh;
-        lantern.position = new BABYLON.Vector3(0.5, 1, 0); // Position relative au personnage
-        lantern.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5); // Ajuster l'échelle si nécessaire
+        lantern.position = new BABYLON.Vector3(0.5, 1, 0); 
+        lantern.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
 
-        // Attacher la lumière de la lanterne au personnage
+        
         lanternLight.parent = lantern;
 
-        // Afficher un message pour indiquer que la lanterne est équipée
+        
         this.showLanternMessage("Vous avez équipé la lanterne !");
 
-        // Passer à la scène suivante
+        // Passer à la scène 2
         setTimeout(() => {
             this.goToNextScene();
-        }, 2000); // Attendre 2 secondes avant de passer à la scène suivante
+        }, 2000); 
     }
 
     showLanternMessage(message) {
@@ -493,37 +492,37 @@ export class Scene1 extends SceneBase {
     }
 
     triggerDeathScreen() {
-        // Empêcher plusieurs activations de la cinématique
+        
         if (this.isInCutscene) return;
         this.isInCutscene = true;
     
-        // Bloquer les interactions du joueur
+       
         this.scene.detachControl();
     
-        // Créer ou réutiliser une seule UI fullscreen
+        
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("deathScreenUI");
     
-        // Nettoyer toute UI précédente au cas où
+       
         advancedTexture.getChildren().forEach(c => advancedTexture.removeControl(c));
     
-        // Créer un fond noir
+        
         const background = new BABYLON.GUI.Rectangle();
         background.width = "100%";
         background.height = "100%";
         background.background = "black";
-        background.alpha = 1; // Opacité initiale
+        background.alpha = 1; 
         advancedTexture.addControl(background);
     
-        // Créer un bloc de texte pour afficher les messages
+        
         const textBlock = new BABYLON.GUI.TextBlock();
         textBlock.color = "white";
         textBlock.fontSize = 36;
         textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         textBlock.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        textBlock.text = ""; // Texte initial vide
+        textBlock.text = ""; 
         advancedTexture.addControl(textBlock);
     
-        // Liste des messages à afficher
+        
         const messages = [
             "Il fait très sombre ici, c'est étrange...",
             "??? : PARTEZ ! C'EST DANGEREUX !",
@@ -531,54 +530,54 @@ export class Scene1 extends SceneBase {
             "Je... dois... fuir..."
         ];
     
-        // Afficher les messages un par un
+        
         let currentMessageIndex = 0;
     
         const showNextMessage = () => {
             if (currentMessageIndex < messages.length) {
-                // Afficher le message actuel
+                
                 textBlock.text = messages[currentMessageIndex];
                 console.log("Affichage du message :", messages[currentMessageIndex]);
                 currentMessageIndex++;
     
-                // Afficher le prochain message après 3 secondes
+                
                 setTimeout(showNextMessage, 3000);
             } else {
-                // Tous les messages ont été affichés, effectuer le retour au jeu
+                
                 console.log("Tous les messages ont été affichés.");
                 
                 this.returnToGame(advancedTexture, background, textBlock);
             }
         };
     
-        // Démarrer l'affichage des messages
+        
         showNextMessage();
     }
     
     returnToGame(advancedTexture, background, textBlock) {
-        // Ajouter un fondu noir
-        background.alpha = 1; // Rendre le fond noir complètement opaque
-        textBlock.text = ""; // Effacer le texte
+        
+        background.alpha = 1; 
+        textBlock.text = ""; 
     
-        // Réduire progressivement l'opacité du fond noir
+        
         const fadeOutInterval = setInterval(() => {
-            background.alpha -= 0.02; // Réduire l'opacité
+            background.alpha -= 0.02; 
             if (background.alpha <= 0) {
-                clearInterval(fadeOutInterval); // Arrêter le fondu une fois terminé
-                advancedTexture.removeControl(background); // Supprimer le fond noir
-                advancedTexture.removeControl(textBlock); // Supprimer le texte
-                this.scene.attachControl(); // Rendre les contrôles au joueur
-                this.isInCutscene = false; // Fin de la cinématique
-                this.cinematicFinished = true; // Marquer la cinématique comme terminée
+                clearInterval(fadeOutInterval); 
+                advancedTexture.removeControl(background); 
+                advancedTexture.removeControl(textBlock);
+                this.scene.attachControl(); 
+                this.isInCutscene = false; 
+                this.cinematicFinished = true; 
     
-                // Supprimer la porte "opening"
+                
                 if (this.opening) {
                     console.log("Suppression de la porte 'opening'...");
 
-                    this.opening.isVisible = false; // Ne plus afficher la porte
-                    this.opening.setEnabled(false); // Désactiver la porte dans la scène
+                    this.opening.isVisible = false; 
+                    this.opening.setEnabled(false); 
                     
-                    // Supprimer toutes les instances ou clones
+                   
                     const openingInstances = this.scene.meshes.filter(mesh => mesh.name === "opening");
                     if (openingInstances.length > 0) {
                         openingInstances.forEach(instance => {
@@ -588,10 +587,10 @@ export class Scene1 extends SceneBase {
                         console.log("Toutes les instances de 'opening' ont été supprimées.");
                     }
     
-                    // Supprimer le mesh principal
-                    this.scene.removeMesh(this.opening); // Retirer de la scène
-                    this.opening.dispose(); // Supprimer le mesh
-                    this.opening = null; // Nettoyer la référence
+                    
+                    this.scene.removeMesh(this.opening); 
+                    this.opening.dispose(); 
+                    this.opening = null; 
                     
                     console.log("La porte 'opening' a été supprimée.");
                 } else {
@@ -600,31 +599,31 @@ export class Scene1 extends SceneBase {
     
                
     
-                // Afficher le message de la lanterne
+                
                 this.showLanternMessage("Je t'avais prévenu ! Allez, viens me chercher, je vais t'aider à sortir d'ici !");
             }
-        }, 50); // Intervalle de 50ms pour un fondu fluide
+        }, 50); 
     }
 
     async goToNextScene() {
         try {
             console.log("Passage à la scène 2...");
     
-            // Stopper la boucle de rendu de l'ancienne scène
+            
             this.engine.stopRenderLoop();
     
-            // Nettoyer les observables de l'ancienne scène
+            
             this.scene.onBeforeRenderObservable.clear();
     
-            // Charger la scène suivante
+            
             const { Scene2 } = await import('./scene2.js');
             const scene2 = new Scene2(this.engine, this.canvas);
             await scene2.initScene();
     
-            // Nettoyer l’ancienne scène
+            
             this.scene.dispose();
     
-            // Redémarrer le renderLoop avec la nouvelle scène
+            
             this.engine.runRenderLoop(() => {
                 if (scene2.scene) {
                     scene2.scene.render();
@@ -641,19 +640,19 @@ export class Scene1 extends SceneBase {
       
 
         const textBlock = new BABYLON.GUI.TextBlock();
-        textBlock.text = ""; // vide au départ
+        textBlock.text = ""; 
         textBlock.color = "white";
         textBlock.fontSize = 24;
         textBlock.height = "100px";
 
-        // Centrer horizontalement le bloc
+       
         textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        // Placer le bloc tout en bas de l'écran
+        
         textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        // Ajouter un petit espace depuis le bas
+        
         textBlock.paddingBottom = "20px";
 
-        // (optionnel) centrer le texte à l'intérieur du bloc
+       
         textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 
         advancedTexture.addControl(textBlock);
@@ -667,15 +666,15 @@ export class Scene1 extends SceneBase {
 
         let index = 0;
 
-        // Affiche le premier message immédiatement
+        
         textBlock.text = messages[index];
 
-        // Puis les suivants toutes les 3 secondes
+        
         const intervalId = setInterval(() => {
             index++;
             if (index >= messages.length) {
-                clearInterval(intervalId); // Arrêter après le dernier message
-                textBlock.text = ""; // Ou laisse le dernier message affiché si tu préfères
+                clearInterval(intervalId); 
+                textBlock.text = ""; 
                 return;
                
 
