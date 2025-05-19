@@ -1,6 +1,6 @@
 import { SceneBase } from './scenebase.js';
 import { Personnage } from './personnage.js';
-import { Scene2 } from './scene2.js'; // Assurez-vous que Scene2 est correctement importé
+import { Scene2 } from './scene2.js'; 
 
 export class Scene1 extends SceneBase {
     constructor(engine, canvas) {
@@ -17,7 +17,7 @@ export class Scene1 extends SceneBase {
 export class Enemy {
     constructor(scene, personnage, position = new BABYLON.Vector3(10, 1, 0), size = 2, health = 3) {
         this.scene = scene;
-        this.personnage = personnage; // Référence au personnage
+        this.personnage = personnage; 
         this.position = position;
         this.size = size;
         this.health = health;
@@ -27,10 +27,10 @@ export class Enemy {
         // Charger le modèle cauchemar.glb
         BABYLON.SceneLoader.ImportMesh("", "asset/", "cauchemar.glb", this.scene, (meshes) => {
             if (meshes.length > 0) {
-                // Créer un TransformNode parent
+                
                 this.enemy = new BABYLON.TransformNode("enemyParent", this.scene);
 
-                // Attacher les meshes du modèle au parent
+               
                 meshes.forEach(mesh => {
                     mesh.parent = this.enemy;
                 });
@@ -41,12 +41,12 @@ export class Enemy {
 
                 // Créer une hitbox invisible
                 this.hitbox = BABYLON.MeshBuilder.CreateBox("enemyHitbox", {
-                    width: 1.5, height: 2.5, depth: 1.5 // Dimensions ajustées
+                    width: 1.5, height: 2.5, depth: 1.5 
                 }, this.scene);
                 this.hitbox.parent = this.enemy;
-                this.hitbox.position = new BABYLON.Vector3(0, 1.5, 0); // locale
-                this.hitbox.isVisible = false; // TEMPORAIRE : Rendre visible pour déboguer
-                this.hitbox.checkCollisions = false; // Désactiver les collisions physiques
+                this.hitbox.position = new BABYLON.Vector3(0, 1.5, 0); 
+                this.hitbox.isVisible = false; 
+                this.hitbox.checkCollisions = false; 
 
                 console.log("Modèle cauchemar chargé et hitbox attachée.");
             } else {
@@ -54,14 +54,14 @@ export class Enemy {
             }
         });
 
-        // Boucle de mise à jour
+        
         this.scene.onBeforeRenderObservable.add(() => {
             this.update();
         });
     }
 
     update() {
-        if (!this.enemy || this.health <= 0) return; // Ne rien faire si l'ennemi est supprimé ou mort
+        if (!this.enemy || this.health <= 0) return; 
 
         this.checkCollisions();
         this.moveTowardPlayer();
@@ -69,12 +69,12 @@ export class Enemy {
         // Vérifier si l'ennemi est proche du personnage
         if (this.personnage && this.personnage.mesh && this.hitbox && this.hitbox.intersectsMesh(this.personnage.mesh, false)) {
             console.log("L'ennemi est proche du personnage !");
-            // Ajoutez ici la logique pour gérer l'interaction (par exemple, réduire la santé du personnage)
+        
         }
     }
 
     checkCollisions() {
-        if (!this.hitbox) return; // Ne rien faire si la hitbox est supprimée
+        if (!this.hitbox) return; 
 
         this.scene.meshes.forEach(mesh => {
             if (mesh.name.startsWith("fireball")) {
@@ -122,14 +122,14 @@ export class Enemy {
             this.hitbox = null;
         }
     
-        // Supprimer les observables associés
+       
         this.scene.onBeforeRenderObservable.removeCallback(this.update);
     
       
     }
 
     update() {
-        if (!this.enemy || this.health <= 0) return; // Ne rien faire si l'ennemi est supprimé ou mort
+        if (!this.enemy || this.health <= 0) return; 
     
         this.checkCollisions();
         this.moveTowardPlayer();

@@ -153,14 +153,14 @@ export class Personnage {
         material.emissiveColor = new BABYLON.Color3(1, 0.5, 0);
         fireball.material = material;
 
-       // Force un pick sur le plan de visée uniquement
+       
 const pickInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY, (mesh) => mesh.name === "targetPlane");
 
 let target;
 if (pickInfo.hit && pickInfo.pickedPoint) {
     target = pickInfo.pickedPoint;
 } else {
-    // Fallback : vise devant le joueur
+   
     const forwardRay = this.scene.activeCamera.getForwardRay();
     target = forwardRay.origin.add(forwardRay.direction.scale(20));
 }

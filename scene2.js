@@ -8,7 +8,7 @@ export class Scene2 extends SceneBase {
         super(engine, canvas);
         this.sceneName = "Scene2";
         this.roomSize = 48;
-        this.arbresCharges = false; // ✅ Ne charger qu'une seule fois
+        this.arbresCharges = false; 
         this.isNearDoor = false;
         this.initScene();
     }
@@ -25,11 +25,11 @@ export class Scene2 extends SceneBase {
 
         // Permet de gérer les bugs de collision
         const targetingPlane = BABYLON.MeshBuilder.CreatePlane("targetPlane", { size: 100 }, this.scene);
-        targetingPlane.rotation.x = Math.PI / 2; // Horizontal (à plat)
-        targetingPlane.position.y = 1; // À la hauteur du tir (tu peux ajuster)
+        targetingPlane.rotation.x = Math.PI / 2; 
+        targetingPlane.position.y = 1; 
         targetingPlane.isPickable = true;
-        targetingPlane.visibility = 0; // Invisible
-        targetingPlane.isVisible = false; // Masque dans le debug layer aussi
+        targetingPlane.visibility = 0; 
+        targetingPlane.isVisible = false; 
  
  
         this.customizeScene();
@@ -41,7 +41,6 @@ export class Scene2 extends SceneBase {
         const wallHeight = 15;
         const wallThickness = 0.5;
  
-        // 🧹 Supprimer anciens murs et sol
         const wallsToRemove = ["backWall", "frontWall", "leftWall", "rightWall", "collisionWall"];
         wallsToRemove.forEach(wallName => {
             const wall = this.scene.getMeshByName(wallName);
@@ -50,7 +49,7 @@ export class Scene2 extends SceneBase {
  
         if (this.ground) this.ground.dispose();
  
-        // Sol
+       
         this.ground = BABYLON.MeshBuilder.CreateGround("ground", { width: roomSize, height: roomSize }, this.scene);
         const groundMaterial = new BABYLON.StandardMaterial("groundMaterial", this.scene);
         groundMaterial.diffuseTexture = new BABYLON.Texture("asset/solf.jpg", this.scene);
@@ -59,7 +58,7 @@ export class Scene2 extends SceneBase {
         this.ground.material = groundMaterial;
         this.ground.checkCollisions = true;
  
-        // Murs
+ 
         const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", this.scene);
         wallMaterial.diffuseTexture = new BABYLON.Texture("asset/murForet.jpeg", this.scene);
         wallMaterial.diffuseTexture.uScale = 2;
@@ -96,7 +95,7 @@ export class Scene2 extends SceneBase {
  
         this.scene.onKeyboardObservable.add((kbInfo) => {
             if (kbInfo.type === BABYLON.KeyboardEventTypes.KEYDOWN) {
-                // Condition : touche F, proche de la porte, porte activée
+                
                 if ((kbInfo.event.key === "f" || kbInfo.event.key === "F") && this.isNearDoor && this.door.isEnabled()) {
                     this.teleportToScene2();
                 }
@@ -105,7 +104,7 @@ export class Scene2 extends SceneBase {
  
         this.guiTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
  
-        // Créer un TextBlock invisible par défaut
+        
         this.messageDoor = new BABYLON.GUI.TextBlock();
         this.messageDoor.text = "";
         this.messageDoor.color = "white";
@@ -113,11 +112,11 @@ export class Scene2 extends SceneBase {
         this.messageDoor.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         this.messageDoor.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.messageDoor.paddingBottom = 40;
-        this.messageDoor.isVisible = false; // caché au début
+        this.messageDoor.isVisible = false; 
  
         this.guiTexture.addControl(this.messageDoor);
  
-        // Nouveau message à l'ouverture de la porte
+        
         this.messageOpenDoor = new BABYLON.GUI.TextBlock();
         this.messageOpenDoor.text = "";
         this.messageOpenDoor.color = "white";
@@ -136,7 +135,7 @@ export class Scene2 extends SceneBase {
             const distance = BABYLON.Vector3.Distance(this.personnage.mesh.position, this.door.position);
             this.isNearDoor = distance < 5 && this.door.isEnabled();
  
-            // Optionnel : affichage console ou HUD quand prêt à entrer
+            
             if (this.isNearDoor) {
                 this.messageDoor.text = "Appuyez sur F pour entrer !";
                 this.messageDoor.isVisible = true;
@@ -153,12 +152,12 @@ export class Scene2 extends SceneBase {
         this.personnage = new Personnage(this.scene, new BABYLON.Vector3(0, 1, 0));
         console.log("Personnage initialisé :", this.personnage);
 
-    // Vérifiez que le mesh du personnage est bien chargé
+    
     if (!this.personnage.mesh) {
         console.error("Erreur : Le mesh du personnage n'est pas chargé.");
     }
  
-        // 💡 Lanterne (qui suit le joueur)
+        // chargement de la lanterne
         BABYLON.SceneLoader.ImportMesh("", "asset/", "lanterne.glb", this.scene, (meshes) => {
             const lantern = meshes[0];
             lantern.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
@@ -180,7 +179,7 @@ export class Scene2 extends SceneBase {
             });
         });
  
-        // 🌳 Arbres (chargement une seule fois)
+        // chargement des arbres
         if (!this.arbresCharges) {
             this.arbresCharges = true;
             BABYLON.SceneLoader.ImportMesh("", "asset/", "arbre.glb", this.scene, (meshes) => {
@@ -224,7 +223,7 @@ export class Scene2 extends SceneBase {
             });
         }
  
-        // 🌿 Plantes
+        // Chargement des Plantes
         BABYLON.SceneLoader.ImportMesh("", "asset/", "plant.glb", this.scene, (meshes) => {
             const plantMeshes = meshes.filter(m => m instanceof BABYLON.Mesh && m.geometry);
             if (plantMeshes.length === 0) return;
@@ -268,7 +267,7 @@ export class Scene2 extends SceneBase {
             plantMeshes.forEach(m => m.setEnabled(false));
         });
  
-         // 🚪 Porte (créée **avant** les lampions)
+         // Porte
         this.door = BABYLON.MeshBuilder.CreateBox("porte", { width: 4, height: 6, depth: 0.3 }, this.scene);
         this.door.position = new BABYLON.Vector3(0, -4, this.roomSize / 2 - 0.2);
         this.door.checkCollisions = true;
@@ -277,13 +276,13 @@ export class Scene2 extends SceneBase {
         this.door.setEnabled(false);
         this.doorOpened = false;
  
-        // 🏮 Lampions
+        //Lampions
         this.lampions = [];
         this.nbLampionsAllumes = 0;
         const lampionPositions = [
-            new BABYLON.Vector3(-15, 0, 3),// en évidence
-            new BABYLON.Vector3(15, 0, 23),// contre le mur en haut à droite
-            new BABYLON.Vector3(13, 0, -16.5)// en bas sous les arbres
+            new BABYLON.Vector3(-15, 0, 3),
+            new BABYLON.Vector3(15, 0, 23),
+            new BABYLON.Vector3(13, 0, -16.5)
         ];
  
         const onLampionAllume = () => {
@@ -292,7 +291,7 @@ export class Scene2 extends SceneBase {
  
             if (this.nbLampionsAllumes === 3 && !this.doorOpened) {
                 this.doorOpened = true;
-                console.log("✅ Tous les lampions sont allumés !");
+                console.log("Tous les lampions sont allumés !");
                 this.door.setEnabled(true);
  
                 const animation = new BABYLON.Animation("doorOpen", "position.y", 30,
@@ -319,12 +318,12 @@ export class Scene2 extends SceneBase {
                         "Lanterne : Sois prudent, le combat va être rude.",
                         "Une porte s'ouvre au loin..."
                     ]);
-                }, 2000); // 2000 ms = 2 secondes
+                }, 2000); 
                 this.messageOpenDoor.isVisible = true;
  
                 setTimeout(() => {
                     this.messageOpenDoor.isVisible = false;
-                }, 4000); // affiché pendant 4 secondes
+                }, 4000); 
             }
         };
  
@@ -346,7 +345,7 @@ export class Scene2 extends SceneBase {
                 "Lanterne : Je te prête mon pouvoir, sois prudent.",
                 "Visez et tirez une boule de feu avec la souris "
             ]);
-        }, 2000); // 2000 ms = 2 secondes
+        }, 2000); 
 
     }
  
@@ -356,7 +355,7 @@ export class Scene2 extends SceneBase {
         console.log("Téléportation vers la scène 2 !");
         setTimeout(() => {
             this.goToNextScene();
-        }, 2000); // Attendre 2 secondes avant de passer à la scène suivante
+        }, 2000); 
     }
  
     showIntroTexts(lines) {
@@ -425,21 +424,21 @@ export class Scene2 extends SceneBase {
         try {
             console.log("Passage à la scène 3...");
     
-            // Stopper la boucle de rendu de l'ancienne scène
+          
             this.engine.stopRenderLoop();
     
-            // Nettoyer les observables de l'ancienne scène
+           
             this.scene.onBeforeRenderObservable.clear();
     
-            // Charger la scène suivante
+            
             const { Scene3 } = await import('./scene3.js');
             const scene3 = new Scene3(this.engine, this.canvas);
             await scene3.initScene();
     
-            // Nettoyer l’ancienne scène
+            
             this.scene.dispose();
     
-            // Redémarrer le renderLoop avec la nouvelle scène
+            
             this.engine.runRenderLoop(() => {
                 if (scene3.scene) {
                     scene3.scene.render();

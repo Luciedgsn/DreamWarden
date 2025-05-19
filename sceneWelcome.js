@@ -7,72 +7,71 @@ export class SceneWelcome {
         this.engine = engine;
         this.canvas = canvas;
         this.scene = new BABYLON.Scene(engine);
-        this.gameScene = null; // Stocker la scène de jeu
+        this.gameScene = null; 
  
-        // Créer une caméra
         const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), this.scene);
         camera.setTarget(BABYLON.Vector3.Zero());
         camera.attachControl(canvas, true);
  
-        // Créer une lumière
+       
         const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), this.scene);
         light.intensity = 0.7;
  
-        // Changer le fond en blanc
+       
         this.scene.clearColor = new BABYLON.Color3(1, 1, 1);
  
-        // Créer une interface utilisateur
+        
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
  
-        // Ajouter une image de fond
+       
         const backgroundImage = new BABYLON.GUI.Image("background", "asset/FondAccueil.png");
         backgroundImage.width = "100%";
         backgroundImage.height = "100%";
         this.advancedTexture.addControl(backgroundImage);
-        this.backgroundImage = backgroundImage; // Stocker l'image de fond pour modification ultérieure
+        this.backgroundImage = backgroundImage; 
  
-        // Ajouter le bouton "Jouer"
+        
         this.playButton = BABYLON.GUI.Button.CreateSimpleButton("playButton", "Chargement...");
         this.playButton.width = "200px";
         this.playButton.height = "40px";
         this.playButton.color = "white";
-        this.playButton.background = "#444"; // Gris foncé
-        this.playButton.isEnabled = false; // Désactiver le bouton pendant le chargement
+        this.playButton.background = "#444"; 
+        this.playButton.isEnabled = false; 
         this.playButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.playButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         this.playButton.top = "-80px";
         this.advancedTexture.addControl(this.playButton);
  
-        // Ajouter le bouton "Commandes"
+        
         this.commandsButton = BABYLON.GUI.Button.CreateSimpleButton("commandsButton", "Commandes");
         this.commandsButton.width = "200px";
         this.commandsButton.height = "40px";
         this.commandsButton.color = "white";
-        this.commandsButton.background = "#333"; // Bleu foncé
+        this.commandsButton.background = "#333"; 
         this.commandsButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.commandsButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         this.commandsButton.top = "-30px";
         this.advancedTexture.addControl(this.commandsButton);
  
-        // Ajouter un événement pour afficher les commandes
+       
         this.commandsButton.onPointerClickObservable.add(() => {
             this.showCommands();
         });
  
-        // Lancer le rendu de l'écran d'accueil immédiatement
+        
         this.renderScene();
  
-        // Charger la scène de jeu en arrière-plan après un court délai
-        setTimeout(() => this.loadGameScene(), 100); // Délai de 100ms pour s'assurer que l'écran d'accueil est affiché
+        
+        setTimeout(() => this.loadGameScene(), 100); 
  
-        // Ajouter un événement pour le bouton "Jouer"
+       
         this.playButton.onPointerClickObservable.add(() => {
             if (this.playButton.isEnabled) {
                 this.startGame();
             }
         });
  
-        // Ajouter un écouteur pour la touche "Espace"
+       
         window.addEventListener("keydown", (event) => {
             if (event.key === " " && this.playButton.isEnabled) {
                 this.startGame();
@@ -81,13 +80,13 @@ export class SceneWelcome {
     }
  
     async loadGameScene() {
-        // Charger la scène de jeu
+        
         this.gameScene = new Scene1(this.engine, this.canvas);
         await this.gameScene.initScene();
  
-        // Activer le bouton "Jouer" une fois le chargement terminé
+        
         this.playButton.textBlock.text = "Jouer";
-        this.playButton.background = "#001f3f"; // Vert foncé
+        this.playButton.background = "#001f3f"; 
         this.playButton.isEnabled = true;
     }
  
@@ -99,7 +98,7 @@ export class SceneWelcome {
         // Remplacer l'image de fond par celle des commandes
         this.backgroundImage.source = "asset/FondAccueilCommandes.png";
  
-        // Ajouter un titre "Commandes"
+      
         this.commandsTitle = new BABYLON.GUI.TextBlock();
         this.commandsTitle.text = "Commandes";
         this.commandsTitle.color = "white";
@@ -107,7 +106,7 @@ export class SceneWelcome {
         this.commandsTitle.top = "-40%";
         this.advancedTexture.addControl(this.commandsTitle);
  
-        // Ajouter la liste des commandes
+        // Liste des commandes
         this.commandsText = new BABYLON.GUI.TextBlock();
         this.commandsText.text = "- Déplacement : ZQSD ou flèches\n\n- Tir : clic gauche\n\n - Sprint : touche maj";
         this.commandsText.color = "white";
@@ -120,7 +119,7 @@ export class SceneWelcome {
         this.backButton.width = "200px";
         this.backButton.height = "40px";
         this.backButton.color = "white";
-        this.backButton.background = "#444"; // Gris foncé
+        this.backButton.background = "#444"; 
         this.backButton.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         this.backButton.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         this.backButton.top = "-30px";
@@ -133,21 +132,21 @@ export class SceneWelcome {
     }
  
     hideCommands() {
-        // Supprimer les éléments de la page "Commandes"
+        
         this.commandsTitle.dispose();
         this.commandsText.dispose();
         this.backButton.dispose();
  
-        // Réafficher les boutons "Jouer" et "Commandes"
-        this.playButton.isVisible = true; // Réafficher le bouton "Jouer"
+        
+        this.playButton.isVisible = true; 
         this.commandsButton.isVisible = true;
  
-        // Restaurer l'image de fond d'origine
+        
         this.backgroundImage.source = "asset/FondAccueil.png";
     }
  
     startGame() {
-        // Passer à la scène de jeu
+    
         this.engine.stopRenderLoop();
         this.gameScene.renderScene();
         this.messageIntro();
@@ -163,19 +162,19 @@ export class SceneWelcome {
         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         const textBlock = new BABYLON.GUI.TextBlock();
-        textBlock.text = ""; // vide au départ
+        textBlock.text = "";
         textBlock.color = "white";
         textBlock.fontSize = 24;
         textBlock.height = "100px";
 
-        // Centrer horizontalement le bloc
+       
         textBlock.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        // Placer le bloc tout en bas de l'écran
+       
         textBlock.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        // Ajouter un petit espace depuis le bas
+        
         textBlock.paddingBottom = "20px";
 
-        // (optionnel) centrer le texte à l'intérieur du bloc
+        
         textBlock.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
 
         advancedTexture.addControl(textBlock);
@@ -205,15 +204,15 @@ export class SceneWelcome {
 
         let index = 0;
 
-        // Affiche le premier message immédiatement
+        
         textBlock.text = messages[index];
 
-        // Puis les suivants toutes les 3 secondes
+        
         const intervalId = setInterval(() => {
             index++;
             if (index >= messages.length) {
-                clearInterval(intervalId); // Arrêter après le dernier message
-                textBlock.text = ""; // Ou laisse le dernier message affiché si tu préfères
+                clearInterval(intervalId); 
+                textBlock.text = ""; 
                 return;
             }
             textBlock.text = messages[index];

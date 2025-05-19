@@ -2,17 +2,11 @@ export class Lanterne {
     constructor(scene, position = new BABYLON.Vector3(0, 1, 0)) {
         this.scene = scene;
         this.position = position;
-        this.isCollected = false; // Indique si la lanterne a été collectée
-        this.dialogues = [
-            "Bonjour, aventurier.",
-            "Je suis une lanterne magique.",
-            "Je peux éclairer votre chemin.",
-            "Mais vous devez me porter avec soin."
-        ]; // Liste des dialogues de la lanterne
-        this.currentDialogueIndex = 0; // Suivi du dialogue actuel
-        this.isEquipped = false; // Indique si la lanterne est équipée
+        this.isCollected = false; 
+        this.currentDialogueIndex = 0; 
+        this.isEquipped = false; 
 
-        // Interface utilisateur pour les dialogues
+        
         this.advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         // Créer la lanterne
@@ -60,10 +54,10 @@ export class Lanterne {
         dialogueBox.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         dialogueBox.top = "-150px";
 
-        // Ajouter le dialogue à l'interface utilisateur
+      
         this.advancedTexture.addControl(dialogueBox);
 
-        // Supprimer le dialogue après 3 secondes
+       
         setTimeout(() => {
             this.advancedTexture.removeControl(dialogueBox);
         }, 3000);
@@ -73,19 +67,18 @@ export class Lanterne {
     equipLantern(personnage) {
         if (this.isEquipped) return;
 
-        // Attacher la lanterne au personnage
+     
         this.mesh.parent = personnage.mesh;
-        this.mesh.position = new BABYLON.Vector3(0.5, 1, 0); // Position relative au personnage
-        this.mesh.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5); // Ajuster l'échelle si nécessaire
+        this.mesh.position = new BABYLON.Vector3(0.5, 1, 0); 
+        this.mesh.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5); 
 
-        // Attacher la lumière de la lanterne au personnage
+       
         this.light.parent = this.mesh;
 
-        // Marquer la lanterne comme équipée
+       
         this.isEquipped = true;
 
-        // Afficher un message pour indiquer que la lanterne est équipée
-        this.speak("Vous avez équipé la lanterne !");
+        
     }
 }
 

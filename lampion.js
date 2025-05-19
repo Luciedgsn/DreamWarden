@@ -7,15 +7,15 @@ export class lampion {
         this.allume = false;
         this.enemy = null;
         this.hitbox = null;
-        this.halo = null; // 🔶 Lumière du halo
-        this.emissiveMatOff = null; // matériel pour état éteint (bleu clair)
-        this.emissiveMatOn = null;  // matériel pour état allumé (orange)
+        this.halo = null; 
+        this.emissiveMatOff = null; 
+        this.emissiveMatOn = null; 
  
-         // Préparer le matériel éteint (bleu clair)
+        
         this.emissiveMatOff = new BABYLON.StandardMaterial("lampionEmissiveOff", this.scene);
         this.emissiveMatOff.emissiveColor = new BABYLON.Color3(0.5, 0.7, 1.0); // bleu clair
  
-        // Préparer le matériel allumé (orange)
+        
         this.emissiveMatOn = new BABYLON.StandardMaterial("lampionEmissiveOn", this.scene);
         this.emissiveMatOn.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.0); // orange
  
@@ -25,7 +25,7 @@ export class lampion {
                 this.enemy = new BABYLON.TransformNode("enemyParent", this.scene);
                 meshes.forEach(mesh => {
                     mesh.parent = this.enemy;
-                     // Appliquer le matériel bleu clair par défaut
+            
                     mesh.material = this.emissiveMatOff;
                 });
  
@@ -41,7 +41,7 @@ export class lampion {
                 this.hitbox.isVisible = false;
                 this.hitbox.checkCollisions = true;
  
-                // 🔶 Créer la lumière orange mais éteinte au départ
+                //  Créer la lumière orange mais éteinte au départ
                 this.halo = new BABYLON.PointLight("haloLight", this.enemy.position, this.scene);
                 this.halo.diffuse = new BABYLON.Color3(1.0, 0.5, 0.0); // orange
                 this.halo.intensity = 0; // éteint
@@ -76,7 +76,7 @@ export class lampion {
     this.scene.meshes.forEach(mesh => {
         if (mesh.name.startsWith("fireball") && mesh.intersectsMesh(this.hitbox, false)) {
             console.log("Collision détectée !");
-            this.allumer(); // <-- appel de la méthode ici !
+            this.allumer(); 
             mesh.dispose();
         }
     });
@@ -100,7 +100,7 @@ allumer() {
             });
         }
  
-        // Appeler le callback
+       
         if (this.onAllume) this.onAllume();
     }
 }
