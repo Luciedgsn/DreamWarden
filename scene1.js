@@ -35,7 +35,7 @@ export class Scene1 extends SceneBase {
         const wallHeight = 15;
         const wallThickness = 0.5;
     
-        // 🧹 Étape 1 : SUPPRIMER les anciens murs et le sol
+        
         const wallsToRemove = ["backWall", "frontWall", "leftWall", "rightWall", "collisionWall"];
         wallsToRemove.forEach(wallName => {
             const wall = this.scene.getMeshByName(wallName);
