@@ -1,4 +1,4 @@
-import { SceneBase } from './scenebase.js';
+import { SceneBase } from './sceneBase.js';
 import { Personnage } from './personnage.js';
 import { lampion } from './lampion.js';
  
