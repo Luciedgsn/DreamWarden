@@ -1,6 +1,6 @@
 // scene1.js
 
-import { SceneBase } from './scenebase.js';
+import { SceneBase } from './sceneBase.js';
 import { Personnage } from './personnageSP.js';
 
 export class Scene1 extends SceneBase {
